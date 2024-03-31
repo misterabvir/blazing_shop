@@ -1,4 +1,4 @@
-﻿using Contracts;
+﻿using Contracts.Categories;
 using Domain.Categories;
 using Shared.Results;
 

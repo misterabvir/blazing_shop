@@ -1,4 +1,4 @@
-namespace Contracts;
+namespace Contracts.Categories;
 
 public class CategoryContract
 {

@@ -1,4 +1,5 @@
-using Contracts;
+using Contracts.Categories;
+using Contracts.Products;
 using Microsoft.AspNetCore.Components;
 using Shared.Pagination;
 

@@ -1,4 +1,4 @@
-using Contracts;
+using Contracts.Categories;
 using Shared.Results;
 
 namespace Client.Layout

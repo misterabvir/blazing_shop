@@ -1,9 +1,9 @@
 ﻿using Shared.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace Contracts;
+namespace Contracts.Authentications;
 
-public class RegisterContract
+public class RegisterRequest
 {
     [Required]
     [MinLength(3)]

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Components;
-using Contracts;
+using Contracts.Products;
 namespace Client.Pages.ProductDetails
 {
     public partial class ProductDetail

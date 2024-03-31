@@ -1,5 +1,5 @@
 using Client.Services.Requests;
-using Contracts;
+using Contracts.Categories;
 using Shared.Results;
 
 namespace Client.Services.Categories;

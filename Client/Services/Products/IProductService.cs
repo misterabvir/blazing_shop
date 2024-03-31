@@ -1,4 +1,4 @@
-using Contracts;
+using Contracts.Products;
 using Shared.Pagination;
 using Shared.Results;
 

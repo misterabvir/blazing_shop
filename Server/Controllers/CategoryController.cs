@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Contracts;
 using MediatR;
 using Application.Categories.GetAll;
 using Application.Categories.Create;
 using Application.Categories.GetByUrl;
 using Server.Common.Extensions;
 using Server.Common.Endpoints;
+using Contracts.Categories;
 
 namespace Server.Controllers;
 

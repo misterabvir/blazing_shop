@@ -1,4 +1,6 @@
-namespace Contracts;
+using Contracts.Categories;
+
+namespace Contracts.Products;
 
 public class ProductContract
 {
@@ -12,5 +14,5 @@ public class ProductContract
     public DateTime UpdatedAt { get; set; }
     public Guid CategoryId { get; set; }
     public CategoryContract Category { get; set; } = null!;
-   
+
 }
