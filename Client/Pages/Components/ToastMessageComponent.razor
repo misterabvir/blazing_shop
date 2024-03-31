@@ -1,0 +1,14 @@
+﻿<div class="toast-message @BackgroundCssClass">
+    <div class="toast-message-header">
+        <i class="bi bi-exclamation-circle-fill toast-message-icon">&nbsp;</i>
+        <strong class="toast-message-title">@Message.Title</strong>
+        <small class="toast-message-date">@DateTime.Now.ToShortTimeString()</small>
+        <button type="button" class="btn btn-close" @onclick="Close"></button>
+    </div>
+    <div class="toast-message-body">
+        @Message.Text
+    </div>
+</div>
+
+
+

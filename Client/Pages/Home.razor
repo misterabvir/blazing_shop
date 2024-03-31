@@ -1,0 +1,21 @@
+﻿@page "/"
+@page "/page/{page}"
+@page "/product/category/{url}"
+@page "/product/category/{url}/page/{page}"
+
+@inject ICategoryService _categoryService
+@inject IProductService _productService
+@inject NavigationManager _navigationManager
+@inject IToastMessageService _toastMessageService;
+
+<div class="content justify-content-center p-2">
+    @if (_isLoading)
+    {
+        <Loader />
+    }
+    else
+    {
+        <ProductList Pagination="@Pagination" CategoryUrl="@_categoryUrl" OnPageSizeChangedEvent="OnPageSizeChanged" />
+    }
+
+</div>

@@ -1,0 +1,42 @@
+﻿@inject IIconService _iconService;
+
+<div class="dropdown picker">
+    <button class="dropdown-toggle btn btn-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="@_selectedIcon.Value picker-button-icon-value"></i>
+        <span class="picker-button-icon-name">&nbsp;@_selectedIcon.Name</span>
+    </button>
+    <div class="dropdown-menu picker-menu" aria-labelledby="dropdownMenuButton1">
+        <ul class="picker-list" style="display:flex; flex-wrap:wrap; list-style-type: none; flex-direction:row; height:300px; overflow:auto;">
+            @foreach (var icon in icons)
+            {
+                <li class="picker-item">
+                    <span class="@icon.Value picker-icon-value" @onclick="() => SelectedIconChanged(icon)">
+
+                    </span>
+                    <span class="picker-icon-name"><i class="@icon.Value"></i>&nbsp;@icon.Name</span>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<Icon> OnIconChanged { get; set; }
+    private string _selectedName { get; set; } = string.Empty;
+    private List<Icon> icons = [];
+    private Icon _selectedIcon { get; set; } = Icon.Empty;
+    protected override async Task OnInitializedAsync()
+    {
+        icons = await _iconService.GetIcons();
+
+    }
+
+    private async Task SelectedIconChanged(Icon selectedIcon)
+    {
+        _selectedIcon = selectedIcon;
+        StateHasChanged();
+        await OnIconChanged.InvokeAsync(_selectedIcon);
+    }
+}

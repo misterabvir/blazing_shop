@@ -1,0 +1,67 @@
+﻿.toast-message {
+    z-index: 1000;
+    margin: 5px;
+    padding: 15px;
+    user-select: none;
+    border-radius: 10px;
+    box-shadow: black 0px 0px 3px 0px;
+    animation-name: fadeOut;
+    animation-duration: 5.5s;
+    animation-timing-function: ease-in;
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    40% {
+        opacity: 1;
+    }
+    80%{
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 0.0;
+    }
+}
+
+.toast-message-header {
+}
+
+
+.toast-message-icon {
+}
+
+.toast-message-title {
+}
+
+
+.toast-message-date {
+    padding: 0 5px;
+}
+
+.toast-message-body {
+    font-size: small;
+    padding-left: 25px;
+}
+
+
+.warning-bg {
+    background-color: #ffd800;
+    color: #333;
+}
+
+.danger-bg {
+    background-color: #f73131;
+    color: #fff;
+}
+
+.success-bg {
+    background-color: #00ff21;
+    color: #333;
+}
+
+.info-bg {
+    background-color: #bdbdbd;
+    color: #333;
+}

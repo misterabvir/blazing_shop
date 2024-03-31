@@ -1,0 +1,103 @@
+﻿@page "/authentication/login"
+
+@inject IAuthenticationService _authenticationService;
+@inject IToastMessageService _toastMessageService;
+
+<div class="h-75 w-100 justify-content-center  d-inline-block pt-3">
+
+    <div class="container justify-content-center border border-1" style="max-width: 600px; min-width:300px;">
+        <div class="row mt-3">
+            <div class="col-12 ">
+                <h3 style="text-align:center;">Login</h3>
+            </div>
+        </div>
+        @if (!IsLogInSuccess)
+        {
+            <div class="row mt-3">
+
+                <EditForm Model="@Model" OnSubmit=@TryLogin>
+                    <DataAnnotationsValidator @ref="DataAnnotationsValidator" />
+                    <div class="form-floating col-12 mt-3">
+                        <InputText type="email" class="form-control" id="user-data" @bind-Value="Model.Email" autocomplete="email" />
+                        <label for="user-data">Email</label>
+                        <ValidationMessage For="()=>Model.Email" />
+                    </div>
+
+                    <div class="form-floating col-12 mt-3">
+                        <InputText type="password" class="form-control" id="password" @bind-Value="Model.Password" autocomplete="current-password" />
+                        <label for="password">Password</label>
+                        <ValidationMessage For="()=>Model.Password" />
+                    </div>
+                    <div class="col-12 text-center my-2">
+                        <button class="btn btn-primary px-5" type="submit">Login</button>
+                    </div>
+                </EditForm>
+
+            </div>
+        }
+        else
+        {
+            <div class="row mt-3">
+                <EditForm Model="@VerificationModel" OnSubmit=@TryVerify>
+                    <DataAnnotationsValidator />
+                    <div class="form-floating col-12">
+                        <InputText type="text" class="form-control" id="code" @bind-Value="@VerificationModel.Code" />
+                        <label for="code" style="margin-left:13px;">Verification code for @VerificationModel.Email</label>
+                        <ValidationMessage For="()=>VerificationModel.Code" />
+                    </div>
+                    <div class="col-12 text-center my-2">
+                        <button class="btn btn-primary px-5" type="submit">Verification</button>
+                    </div>
+                </EditForm>
+            </div>
+        }
+
+    </div>
+</div>
+
+@code {
+    DataAnnotationsValidator DataAnnotationsValidator { get; set; } = null!;
+    private LoginContract Model { get; set; } = new();
+    private VerificationContract VerificationModel { get; set; } = new();
+    private bool IsLogInSuccess { get; set; } = false;
+
+
+    private async Task TryLogin(EditContext editContext)
+    {
+        if (!editContext.Validate())
+        {
+            _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
+            return;
+        }
+        var result = await _authenticationService.Login(Model);
+        IsLogInSuccess = result.IsSuccess;
+        if (!result.IsSuccess)
+        {
+            _toastMessageService.AddErrorMessage(result.Errors);
+        }
+        else
+        {
+            _toastMessageService.AddSuccessMessage("Log In was success, input send code for confirm your credentials");
+            VerificationModel.Email = Model.Email;
+        }
+    }
+
+    private async Task TryVerify(EditContext editContext)
+    {
+        if (!editContext.Validate())
+        {
+            _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
+            return;
+        }
+
+        var result = await _authenticationService.Verify(VerificationModel);
+        if (!result.IsSuccess)
+        {
+            _toastMessageService.AddErrorMessage(result.Errors);
+        }
+        else
+        {
+            _toastMessageService.AddSuccessMessage("Code confirmed successful");
+        }
+    }
+}

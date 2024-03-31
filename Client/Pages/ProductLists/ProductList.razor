@@ -1,0 +1,73 @@
+@inject IProductService _productService
+
+
+
+<div class="container d-flex flex-column justify-content-center">    
+    <div class="row m-0 p-0">
+        <div class="col m-0 p-0">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+
+                    @{
+                        var length = (double)Pagination.Count / Pagination.PageSize;
+                        var urlCategory = string.IsNullOrEmpty(CategoryUrl) ? string.Empty : $"product/category/{CategoryUrl}/";
+                        var url = $"{urlCategory}page/{Pagination.Page - 1}";
+                        var disabledPrevious = Pagination.Page > 1 ? string.Empty : "disabled";
+                    }
+                    <li class="page-item @disabledPrevious"><a class="page-link" href="@url"><span aria-hidden="true">&laquo;</span></a></li>
+
+                    @for (int i = 0; i < length; i++)
+                    {
+                        var number = i + 1;
+                        url = $"{urlCategory}page/{number}";
+                        var active = Pagination.Page == number ? "active" : "";
+                        <li class="page-item @active"><a class="page-link" href="@url">@number</a></li>
+                    }
+                    @{
+                        url = $"{urlCategory}page/{Pagination.Page + 1}";
+                        var disabledNext = Pagination.Page < length ? string.Empty : "disabled";
+                    }
+                    <li class="page-item @disabledNext"><a class="page-link" href="@url"><span aria-hidden="true">&raquo;</span></a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-auto">
+            <select class="form-select" aria-label="Default select example" value="@Pagination.PageSize" @onchange="OnPageSizeChanged">
+                <option value="3">3</option>
+                <option value="5">5 (default)</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+    </div>
+
+
+    @foreach (var product in Pagination.Items)
+    {
+        <div class="row item-card">
+            <div class="col-auto item-card-image-wrapper">
+                <a href="product/@product.Id" class="item-card-body-link">
+                    <img src="@product.Image" class="item-card-image" alt="@product.Title">
+                </a>
+
+            </div>
+
+            <div class="col item-card-body">
+                <a href="product/@product.Id" class="item-card-body-link">
+                    <h5 class="item-card-body-header">
+                        @product.Title
+                        <i class="bi bi-box-arrow-right item-card-body-header-arrow"></i>
+                    </h5>
+                </a>
+                <p class="item-card-body-description">@product.Description</p>
+
+                @if (product.OriginalPrice != 0 && product.OriginalPrice != product.Price)
+                {
+                    <p class="item-card-body-original-price">$ @product.OriginalPrice</p>
+                }
+                <p class="item-card-body-price">$ @product.Price</p>
+
+            </div>
+        </div>
+    }
+</div>
+

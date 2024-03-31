@@ -1,0 +1,60 @@
+@page "/product/{id}"
+@inject IProductService _productService
+@inject IToastMessageService  _toastMessageService;
+
+<TopRowPanelComponent/>
+
+<div class="container  item-detail">
+
+    @if (isLoading)
+    {
+        <Loader />
+    }
+    else
+    {
+        @if (_isExist)
+        {
+            <div class="row">
+                <div class="col">
+                    <span class="item-detail-description">Title</span>
+                    <h5 class="item-detail-body-header">
+                        <a href="product/@_product!.Id" class="item-detail-body-link">
+                            @_product.Title
+                        </a>
+                    </h5>
+                </div>
+                <div class=col-auto>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto item-detail-image-wrapper">
+                    <a href="products/@_product!.Id" class="item-detail-body-link">
+                        <img src="@_product.Image" class="item-detail-image" alt="@_product.Title">
+                    </a>
+                </div>
+                <div class="col">
+                    <span class="item-detail-description">Description</span>
+                    <p class="item-detail-body-description">@_product.Description</p>
+                    <span class="item-detail-description">Price</span>
+                    @if (_product.OriginalPrice != 0 && _product.OriginalPrice != _product.Price)
+                    {
+                        <div class="item-detail-body-prices">
+                            <p class="item-detail-body-original-price">$ @_product.OriginalPrice</p>
+                            <p class="item-detail-body-price">$ @_product.Price</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <p class="item-detail-body-price">$ @_product.Price</p>
+                        </div>
+                    }
+                    <button class="btn btn-primary"> <i class="bi bi-cart"></i> Add to card</button>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+
+

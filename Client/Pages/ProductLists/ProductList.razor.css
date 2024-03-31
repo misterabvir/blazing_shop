@@ -1,0 +1,71 @@
+
+
+.item-card {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-top: 5px;
+}
+
+    .item-card:hover {
+        background-color: #e0e0e0;
+    }
+
+.item-card-image-wrapper {
+    text-align: center;
+    padding: 10px;
+}
+
+.item-card-image {
+    width: 200px;
+    transition: transform 0.2s;
+}
+
+    .item-card-image:hover {
+        transform: scale(1.1);
+        box-shadow: #333 1px 1px 10px 0px;
+    }
+
+
+
+.item-card-body-header {
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.item-card-body-description {
+    font-style: oblique;
+    color: #333;
+}
+
+.item-card-body-price {
+    font-style: oblique;
+    color: red;
+    font-size: 22px;
+    font-weight: bolder;
+    margin: 0;
+}
+
+.item-card-body-original-price {
+    text-decoration: line-through;
+    color: #333;
+    margin: 0;
+}
+
+.item-card-body-link {
+    text-decoration: none;
+    color: #222;
+}
+
+    .item-card-body-link:hover {
+        text-decoration: none;
+        color: #222;
+    }
+
+        .item-card-body-link:hover .item-card-body-header-arrow {
+            visibility: visible;
+        }
+
+.item-card-body-header-arrow {
+    visibility: hidden;
+}

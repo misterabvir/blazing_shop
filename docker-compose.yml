@@ -1,0 +1,17 @@
+version: '3.4'
+
+name: blazing-shop
+
+services:
+  db: 
+    image: postgres
+    container_name: postgres
+    hostname: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSSWORD=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./containers/database:/var/lib/postgresql/data
