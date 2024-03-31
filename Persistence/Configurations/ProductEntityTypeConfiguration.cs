@@ -12,6 +12,7 @@ internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product
 {
     public void Configure(EntityTypeBuilder<Product> product)
     {
+        product.ToTable("products", "common");
         product.HasKey(p => p.Id);
         product.Property(p => p.Id)
             .HasColumnName("product_id")

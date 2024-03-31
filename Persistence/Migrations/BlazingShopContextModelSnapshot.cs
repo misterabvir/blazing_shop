@@ -46,7 +46,7 @@ namespace Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_categories");
 
-                    b.ToTable("categories", (string)null);
+                    b.ToTable("categories", "common");
                 });
 
             modelBuilder.Entity("Domain.Products.Product", b =>
@@ -96,7 +96,24 @@ namespace Persistence.Migrations
                     b.HasIndex("CategoryId")
                         .HasDatabaseName("ix_products_category_id");
 
-                    b.ToTable("products", (string)null);
+                    b.ToTable("products", "common");
+                });
+
+            modelBuilder.Entity("Domain.Users.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.ToTable("users", "accounts");
                 });
 
             modelBuilder.Entity("Domain.Products.Product", b =>
@@ -107,6 +124,129 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_products_categories_category_id");
+                });
+
+            modelBuilder.Entity("Domain.Users.User", b =>
+                {
+                    b.OwnsOne("Domain.Users.Owns.Contact", "Contact", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("contact_id");
+
+                            b1.Property<Guid>("user_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
+
+                            b1.Property<string>("Email")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("email");
+
+                            b1.Property<string>("Phone")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("phone");
+
+                            b1.HasKey("Id", "user_id")
+                                .HasName("pk_contacts");
+
+                            b1.HasIndex("user_id")
+                                .IsUnique()
+                                .HasDatabaseName("ix_contacts_user_id");
+
+                            b1.ToTable("contacts", "accounts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("user_id")
+                                .HasConstraintName("fk_contacts_users_user_id");
+                        });
+
+                    b.OwnsOne("Domain.Users.Owns.Profile", "Profile", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("profile_id");
+
+                            b1.Property<Guid>("user_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
+
+                            b1.Property<string>("Avatar")
+                                .HasColumnType("text")
+                                .HasColumnName("avatar");
+
+                            b1.Property<string>("FirstName")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("first_name");
+
+                            b1.Property<string>("LastName")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("last_name");
+
+                            b1.Property<string>("Username")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("username");
+
+                            b1.HasKey("Id", "user_id")
+                                .HasName("pk_profiles");
+
+                            b1.HasIndex("user_id")
+                                .IsUnique()
+                                .HasDatabaseName("ix_profiles_user_id");
+
+                            b1.ToTable("profiles", "accounts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("user_id")
+                                .HasConstraintName("fk_profiles_users_user_id");
+                        });
+
+                    b.OwnsOne("Domain.Users.Owns.Security", "Security", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("security_id");
+
+                            b1.Property<Guid>("user_id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("user_id");
+
+                            b1.Property<byte[]>("Password")
+                                .IsRequired()
+                                .HasColumnType("bytea")
+                                .HasColumnName("password");
+
+                            b1.Property<byte[]>("Salt")
+                                .IsRequired()
+                                .HasColumnType("bytea")
+                                .HasColumnName("salt");
+
+                            b1.HasKey("Id", "user_id")
+                                .HasName("pk_security");
+
+                            b1.HasIndex("user_id")
+                                .IsUnique()
+                                .HasDatabaseName("ix_security_user_id");
+
+                            b1.ToTable("security", "accounts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("user_id")
+                                .HasConstraintName("fk_security_users_user_id");
+                        });
+
+                    b.Navigation("Contact")
+                        .IsRequired();
+
+                    b.Navigation("Profile")
+                        .IsRequired();
+
+                    b.Navigation("Security")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

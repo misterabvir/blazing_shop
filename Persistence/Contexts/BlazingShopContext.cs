@@ -1,20 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Domain.Categories;
 using Domain.Products;
+using Domain.Users;
 
 namespace Persistence.Contexts;
 
-public class BlazingShopContext : DbContext
+public class BlazingShopContext(DbContextOptions<BlazingShopContext> options) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; } = null!;
     public DbSet<Category> Categories { get; set; } = null!;
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder
-        .UseNpgsql("Host=localhost;Port=5432;Database=blazing_shop_db;Username=user;Password=password")
-        .UseSnakeCaseNamingConvention();
-    }
+    public DbSet<User> Users { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

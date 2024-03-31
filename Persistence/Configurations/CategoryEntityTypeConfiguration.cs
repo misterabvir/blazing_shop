@@ -10,6 +10,7 @@ internal class CategoryEntityTypeConfiguration : IEntityTypeConfiguration<Catego
 {
     public void Configure(EntityTypeBuilder<Category> category)
     {
+        category.ToTable("categories", "common");
         category.HasKey(c => c.Id);
         category.Property(c => c.Id)
             .HasColumnName("category_id")
