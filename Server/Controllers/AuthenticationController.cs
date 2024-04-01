@@ -1,34 +1,75 @@
-﻿using Contracts;
+﻿using Application.Users.Queries.Verification;
 using Contracts.Authentications;
-using Microsoft.AspNetCore.Http;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Results;
+using Server.Common.Extensions;
+using System.Security.Claims;
+using Application.Users.Queries.RepeatVerification;
+using Application.Users.Queries.RefreshToken;
+using Application.Users.Queries.GetAccount;
+using Server.Common.Endpoints;
 
 namespace Server.Controllers
 {
-    [Route("authentication")]
+    [Route(EndPoints.User.Controller)]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    [AllowAnonymous]
+    public class AuthenticationController(ISender sender) : ControllerBase
     {
-        [HttpPost(template: "login")]
-        public async Task<IActionResult> Login(LoginRequest loginContract)
+        private readonly ISender _sender = sender;
+
+        [HttpPost(EndPoints.User.Post.Login)]
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            await Task.CompletedTask;
-            return Ok(Result.Success());
+            var query = request.Map();
+            var result = await _sender.Send(query);
+            return result.Match(Ok, BadRequest);
         }
 
-        [HttpPost(template: "register")]
-        public async Task<IActionResult> Register(RegisterRequest registerContract)
+        [HttpPost(EndPoints.User.Post.Register)]
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
-            await Task.CompletedTask;
-            return Ok(Result.Success());
+            var command = request.Map();
+            var result = await _sender.Send(command);
+            return result.Match(Ok, BadRequest);
         }
 
-        [HttpPost(template: "verify")]
-        public async Task<IActionResult> Verify(VerificationRequest verificationContract)
+        [HttpPost(EndPoints.User.Post.Verify)]
+        public async Task<IActionResult> Verify(VerificationRequest request)
         {
-            await Task.CompletedTask;
-            return Ok(new TokenResponse("token"));
+            var query = new VerificationQuery(request.Email, request.Code);
+            var result = await _sender.Send(query);
+            return result.Map().Match(Ok, BadRequest);
+
+        }
+
+        [HttpPost(EndPoints.User.Post.RepeatVerification)]
+        public async Task<IActionResult> RepeatVerification(RepeatVerificationRequest request)
+        {
+            var query = new RepeatVerificationQuery(request.Email);
+            var result = await _sender.Send(query);
+            return result.Match(Ok, BadRequest);
+        }
+
+        [Authorize]
+        [HttpGet(EndPoints.User.Get.RefreshToken)]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var query = new RefreshTokenQuery(userId);
+            var result = await _sender.Send(query);
+            return result.Map().Match(Ok, BadRequest);
+        }
+
+        [Authorize]
+        [HttpGet(EndPoints.User.Get.Account)]
+        public async Task<IActionResult> GetAccount()
+        {
+            var userId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var query = new GetAccountQuery(userId);
+            var result = await _sender.Send(query);
+            return result.Map().Match(Ok, BadRequest);
         }
     }
 }

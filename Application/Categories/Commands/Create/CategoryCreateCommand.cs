@@ -5,9 +5,9 @@ using Domain.Shared.ValueObjects;
 using MediatR;
 using Shared.Results;
 
-namespace Application.Categories.Create;
+namespace Application.Categories.Commands.Create;
 
-public record CategoryCreateCommand(string Title, string Icon, string Url):
+public record CategoryCreateCommand(string Title, string Icon, string Url) :
     IRequest<Result<Category>>;
 
 public class CategoryCreateCommandHandler(ICategoryRepository categoryRepository) : IRequestHandler<CategoryCreateCommand, Result<Category>>
@@ -22,7 +22,7 @@ public class CategoryCreateCommandHandler(ICategoryRepository categoryRepository
         var url = Url.Create(request.Url);
 
         var result = Category.Create(title, icon, url);
-        if(result.IsSuccess)
+        if (result.IsSuccess)
             result = await _categoryRepository.Add(result.Value!);
         return result;
     }

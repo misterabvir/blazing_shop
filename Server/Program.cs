@@ -6,7 +6,7 @@ using Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddInfrastructure(builder.Configuration)
-    .AddPersistence()
+    .AddPersistence(builder.Configuration)
     .AddApplication()
     .AddServer();
 

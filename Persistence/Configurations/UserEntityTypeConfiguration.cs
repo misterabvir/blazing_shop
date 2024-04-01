@@ -23,8 +23,6 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
         user.OwnsOne(u => u.Contact, ContactConfigure);
         user.OwnsOne(u => u.Profile, ProfileConfigure);
         user.OwnsOne(u => u.Security, SecurityConfigure);
-
-
     }
 
     private void ContactConfigure(OwnedNavigationBuilder<User, Contact> contact)

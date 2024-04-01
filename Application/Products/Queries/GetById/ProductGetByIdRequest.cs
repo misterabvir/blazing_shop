@@ -4,7 +4,7 @@ using Domain.Products.ValueObjects;
 using MediatR;
 using Shared.Results;
 
-namespace Application.Products.GetById;
+namespace Application.Products.Queries.GetById;
 
 
 public record ProductGetByIdRequest(Guid ProductId) : IRequest<Result<Product>>;

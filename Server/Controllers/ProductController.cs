@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using Application.Products.GetAll;
-using Application.Products.GetByCategory;
-using Application.Products.GetById;
+
 using Server.Common.Extensions;
 using Server.Common.Endpoints;
+using Application.Products.Queries.GetAll;
+using Application.Products.Queries.GetById;
+using Application.Products.Queries.GetByCategory;
 
 namespace Server.Controllers;
 

@@ -1,8 +1,7 @@
 ﻿using Application.Base.Services;
 using Domain.Users;
-using Domain.Users.Snapshots;
-using Domain.Users.ValueObjects;
 using Microsoft.IdentityModel.Tokens;
+using Shared.Authentications;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -23,10 +22,7 @@ internal class JwtTokenService(JwtSettings jwtSettings) : IJwtTokenService
             new Claim(type: ClaimTypes.NameIdentifier, value: user.Id.Value.ToString()),
             new Claim(type: ClaimTypes.Email, value: user.Contact.Email.Value),
             new Claim(type: ClaimTypes.MobilePhone, value: user.Contact.Phone.Value),
-            new Claim(type: ClaimTypes.GivenName, value: user.Profile.FirstName.Value),
-            new Claim(type: ClaimTypes.Surname, value: user.Profile.LastName.Value),
             new Claim(type: ClaimTypes.Expiration, value: expiration.ToString()),
-            new Claim(type: ClaimTypes.UserData, value: UserSnapshot.Create(user).ToJson()),
         };
 
         var securityToken = new JwtSecurityToken(

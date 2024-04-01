@@ -24,6 +24,8 @@ public static class DependencyInjection
     {
         app.UseHttpsRedirection();
         app.UseCors("Allow");
+        app.UseAuthentication();
+        app.UseAuthorization();
         app.MapControllers();
         return app;
     }

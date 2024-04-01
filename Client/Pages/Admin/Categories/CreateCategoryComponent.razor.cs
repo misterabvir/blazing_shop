@@ -1,5 +1,6 @@
 using Client.Services.Icons;
 using Contracts;
+using Contracts.Categories;
 
 namespace Client.Pages.Admin.Categories
 {
