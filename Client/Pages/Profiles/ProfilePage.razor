@@ -1,0 +1,120 @@
+﻿@page "/profile"
+@using Client.Services.Sessions
+@inject Account _account;
+@inject IAuthenticationService _authenticationService;
+@inject IToastMessageService _toastMessageService;
+@inject ISessionStorage _sessionStorage;
+
+<div class="d-flex justify-content-center">
+    <div class="container m-0" style="min-width:300px; max-width:800px">
+        <div class="row">
+            <div class="col-sm-12 col-md-4 m-0 p-1">
+                <div class="m-0 row p-2">
+                    <img src="@Model.Avatar" style="height:auto; box-shadow: 1px 1px 5px 0px; margin:auto; padding:0;border-radius:3px;" />
+                </div>
+                <div class="mx-2 row">
+                    <div class="col-12 mt-1 p-0">
+                        <InputFile class="form-control m-0" OnChange="LoadFiles" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-8 m-0 p-1">
+                <div class="m-0 row" style="height:100%">
+
+                    <EditForm Model="@Model" class="col-12" OnSubmit="UpdateProfileHandler">
+                        <div class="row">
+                            <DataAnnotationsValidator @ref="DataAnnotationsValidator" />
+                            <div class="form-floating col-12 mt-3">
+                                <InputText type="text"
+                                           class="form-control" id="username"
+                                           @bind-Value="Model.Username"
+                                           autocomplete="username" />
+                                <label for="username" style="margin-left:12px;">Username</label>
+                                <ValidationMessage For="()=>Model.Username" />
+                            </div>
+
+                            <div class="form-floating col-12 mt-3">
+                                <InputText type="text"
+                                           class="form-control" id="first-name"
+                                           @bind-Value="Model.FirstName"
+                                           autocomplete="given-name" />
+                                <label for="first-name" style="margin-left:12px;">First Name</label>
+                                <ValidationMessage For="()=>Model.FirstName" />
+                            </div>
+                            <div class="form-floating col-12 mt-3">
+                                <InputText type="text"
+                                           class="form-control"
+                                           id="last-name"
+                                           @bind-Value="Model.LastName"
+                                           autocomplete="family-name" />
+                                <label for="last-name" style="margin-left:12px;">Last Name</label>
+                                <ValidationMessage For="()=>Model.LastName" />
+                            </div>
+
+                            <div class="col-12 text-center my-2">
+                                <button class="btn btn-primary px-5" type="submit">Save</button>
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    private DataAnnotationsValidator DataAnnotationsValidator { get; set; } = null!;
+    private UpdateAccountRequest Model { get; set; } = new() { Avatar = "images/no-avatar.webp" };
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrEmpty(_account.Avatar))
+        {
+            Model.Avatar = _account.Avatar;
+        }
+        _account.Updated += AccountUpdateEvent;
+
+    }
+
+    private void AccountUpdateEvent()
+    {
+        if (!string.IsNullOrEmpty(_account.Avatar))
+        {
+            Model.Avatar = _account.Avatar;
+        }
+        Model.Username = _account.Username;
+        Model.FirstName = _account.FirstName;
+        Model.LastName = _account.LastName;
+        StateHasChanged();
+    }
+
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var buffer = new byte[e.File.Size];
+        var resized = await e.File.RequestImageFileAsync(e.File.ContentType, 300, int.MaxValue);
+        await resized.OpenReadStream().ReadAsync(buffer);
+        Model.Avatar = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+    }
+
+    private async Task UpdateProfileHandler(EditContext editContext)
+    {
+        if (!editContext.Validate())
+        {
+            _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
+            return;
+        }
+
+        var token = await _sessionStorage.GetItem<string>("token");
+
+        var result = await _authenticationService.UpdateProfile(Model, token);
+
+        if (result.IsSuccess)
+        {
+            _toastMessageService.AddSuccessMessage("Profile updated successful");
+            _account.FromUpdate(Model);
+            StateHasChanged();
+        }
+    }
+}

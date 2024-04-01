@@ -98,5 +98,18 @@ public class RequestService(HttpClient httpClient) : IRequestService
         return errors;
     }
 
-
+    public async Task<Result> PutAsync(string url, object data, string token = "")
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, url);
+        request.Headers.Add("Authorization", $"Bearer {token}");
+        request.Content = JsonContent.Create(data);
+        var response = await _httpClient.SendAsync(request);
+        var json = await response.Content.ReadAsStringAsync();
+        if (response.IsSuccessStatusCode)
+        {
+            return Result.Success();
+        }
+        var errors = JsonConvert.DeserializeObject<List<Error>>(json)!;
+        return errors;
+    }
 }

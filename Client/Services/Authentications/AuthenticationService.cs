@@ -23,6 +23,11 @@ public class AuthenticationService(IRequestService requestService) : IAuthentica
         return await _requestService.PostAsync("/authentication/register", RegisterContract);
     }
 
+    public async Task<Result> UpdateProfile(UpdateAccountRequest request, string token)
+    {
+         return await _requestService.PutAsync("/authentication/profile", request, token);
+    }
+
     public async Task<Result<TokenResponse>> Verify(VerificationRequest verificationContract)
     {
         return await _requestService.PostAsync<TokenResponse>("/authentication/verify", verificationContract);

@@ -22,4 +22,8 @@ public class User : Entity<UserId>
     public static User Create(Profile profile, Contact contact, Security @private, Role role)
         => new(UserId.CreateUnique(), profile, contact, @private, role);
    
+    public void UpdateProfile(Profile profile)
+    {
+        Profile.Update(profile);
+    }
 }

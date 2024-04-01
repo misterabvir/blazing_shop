@@ -14,4 +14,3 @@ public class LoginRequest
     [Password]
     public string Password { get; set; } = string.Empty;
 }
-

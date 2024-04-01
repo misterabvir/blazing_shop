@@ -12,4 +12,5 @@ public interface IUserRepository
     Task<bool> IsPhoneNotUnique(Phone phone);
     Task<bool> IsUsernameNotUnique(Username username);
     Task<bool> IsUsersExist();
+    Task Update(User user);
 }

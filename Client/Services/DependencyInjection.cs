@@ -24,7 +24,7 @@ public static class DependencyInjection
         services.AddScoped<CustomAuthenticationStateProvider>();
         services.AddScoped<AuthenticationStateProvider>(provider=> provider.GetRequiredService<CustomAuthenticationStateProvider>());
 
-        services.AddSingleton<Profile>();
+        services.AddSingleton<Account>();
 
         services.AddSingleton(provider => 
             configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>() 

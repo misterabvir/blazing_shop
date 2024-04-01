@@ -1,11 +1,11 @@
 ﻿@inject CustomAuthenticationStateProvider _stateProvider;
 @inject IAuthenticationService _authenticationService;
-@inject Profile _profile;
+@inject Account _profile;
 
 <AuthorizeView>
     <Authorized>
         <span>@_profile.Username</span>
-        <a href="profile"><img src="@_profile.Avatar" width="30" height="30" style="border-radius:15px;" /> </a>
+        <a href="profile"><img src="@_profile.Avatar" width="30" height="30" style="border-radius:15px;" alt="" /> </a>
                
     </Authorized>
     <NotAuthorized>
@@ -15,11 +15,12 @@
 </AuthorizeView>
 
 @code {
- 
+
 
     protected override void OnInitialized()
     {
         _stateProvider.Authenticated += AuthenticatedHandler;
+        _profile.Updated += UpdatedProfileHandler;
     }
 
     private void AuthenticatedHandler(string token)
@@ -36,4 +37,10 @@
             StateHasChanged();
         }
     }
+
+    private void UpdatedProfileHandler()
+    {
+        StateHasChanged();
+    }
 }
+
