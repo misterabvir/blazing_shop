@@ -7,7 +7,12 @@ namespace Client.Services.Authentications;
 public class AuthenticationService(IRequestService requestService) : IAuthenticationService
 {
     private readonly IRequestService _requestService = requestService;
-    
+
+    public async Task<Result<AccountResponse>> GetProfile(string token)
+    {
+        return await _requestService.GetAsync<AccountResponse>("/authentication/profile", token);
+    }
+
     public async Task<Result> Login(LoginRequest loginContract)
     {
         return await _requestService.PostAsync("/authentication/login", loginContract);

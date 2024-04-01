@@ -1,0 +1,39 @@
+﻿@inject CustomAuthenticationStateProvider _stateProvider;
+@inject IAuthenticationService _authenticationService;
+@inject Profile _profile;
+
+<AuthorizeView>
+    <Authorized>
+        <span>@_profile.Username</span>
+        <a href="profile"><img src="@_profile.Avatar" width="30" height="30" style="border-radius:15px;" /> </a>
+               
+    </Authorized>
+    <NotAuthorized>
+        <a href="authentication/login" class="nav-link">Login</a>
+        <a href="authentication/register" class="nav-link">Register</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+ 
+
+    protected override void OnInitialized()
+    {
+        _stateProvider.Authenticated += AuthenticatedHandler;
+    }
+
+    private void AuthenticatedHandler(string token)
+    {
+        Task.Run(()=>GetProfile(token));
+    }
+
+    private async Task GetProfile(string token)
+    {
+        var result = await _authenticationService.GetProfile(token);
+        if (result.IsSuccess)
+        {
+            _profile.FromResponse(result.Value!);
+            StateHasChanged();
+        }
+    }
+}

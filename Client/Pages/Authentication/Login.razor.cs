@@ -48,6 +48,8 @@ namespace Client.Pages.Authentication
             else
             {
                 _toastMessageService.AddSuccessMessage("Code confirmed successful");
+                _authenticationStateProvider.NotifyUserLogIn(result.Value!.Token);
+                _navigation.NavigateTo("/");
             }
         }
     }

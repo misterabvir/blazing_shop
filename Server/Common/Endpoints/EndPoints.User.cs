@@ -18,7 +18,7 @@ public static partial class EndPoints
         public static class Get
         {
             public const string RefreshToken = "refresh-token";
-            public const string Account = "account";
+            public const string Profile = "profile";
         }
     }
 }

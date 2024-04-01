@@ -7,7 +7,9 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
 
 
-builder.Services.AddServices();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddServices(builder.Configuration);
+
 
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");

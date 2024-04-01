@@ -10,7 +10,8 @@ namespace Persistence;
 public static class DependencyInjection
 {
     public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration){       
-        services.AddDbContext<BlazingShopContext>(options=> options.UseNpgsql(configuration.GetConnectionString("DatabaseConnection")));
+        services.AddDbContext<BlazingShopContext>(
+            options=> options.UseNpgsql(configuration.GetConnectionString("DatabaseConnection")).UseSnakeCaseNamingConvention());
         services.AddRepositories();
         return services;
     }

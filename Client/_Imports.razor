@@ -4,27 +4,33 @@
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Http
 @using Microsoft.JSInterop
 
 @using Contracts
 @using Contracts.Categories
 @using Contracts.Products
+@using Contracts.Authentications
 
 @using Shared.Attributes
 @using Shared.Pagination
 @using Shared.Results
 
 @using Client
+@using Client.Layout
+
 @using Client.Pages
+@using Client.Pages.Profiles
 @using Client.Pages.Admin.Categories
 @using Client.Pages.Components
 @using Client.Pages.ProductDetails
 @using Client.Pages.ProductLists
-@using Client.Layout
+
 @using Client.Services
 @using Client.Services.ToastMessages
 @using Client.Services.Products
 @using Client.Services.Categories
 @using Client.Services.Icons
 @using Client.Services.Authentications
+@using Client.Services.Profiles;

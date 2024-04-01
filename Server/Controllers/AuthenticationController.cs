@@ -63,7 +63,7 @@ namespace Server.Controllers
         }
 
         [Authorize]
-        [HttpGet(EndPoints.User.Get.Account)]
+        [HttpGet(EndPoints.User.Get.Profile)]
         public async Task<IActionResult> GetAccount()
         {
             var userId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
