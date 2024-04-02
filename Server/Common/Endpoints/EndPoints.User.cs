@@ -13,6 +13,9 @@ public static partial class EndPoints
             public const string Login = "login";
             public const string Verify = "verify";
             public const string RepeatVerification = "repeat-verification";
+            public const string SendVerificationCode = "send-code-verification";
+            public const string ConfirmVerificationCode = "confirm-code-verification";
+            public const string ResetPassword = "reset-password";
         }
 
         public static class Get

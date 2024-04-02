@@ -17,6 +17,7 @@ public class CustomAuthenticationStateProvider(ISessionStorage sessionStorage, J
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
+        IsAuthenticated = false;
         var handler = new JwtSecurityTokenHandler();
         var token = await _sessionStorage.GetItem<string>("token");
 

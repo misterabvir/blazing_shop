@@ -13,5 +13,3 @@ public class VerificationRequest
     [Code(6)]
     public string Code { get; set; } = string.Empty;
 }
-
-public record RepeatVerificationRequest(string Email);

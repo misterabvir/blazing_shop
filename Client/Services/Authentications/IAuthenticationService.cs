@@ -5,9 +5,12 @@ namespace Client.Services.Authentications;
 
 public interface IAuthenticationService
 {
-    Task<Result<TokenResponse>> Login(LoginRequest loginContract);
-    Task<Result> Register(RegisterRequest registerContract);
-    Task<Result<TokenResponse>> Verify(VerificationRequest verificationContract);
+    Task<Result<TokenResponse>> Login(LoginRequest request);
+    Task<Result> Register(RegisterRequest request);
+    Task<Result<TokenResponse>> Verify(VerificationRequest request);
     Task<Result<AccountResponse>> GetProfile(string token);
     Task<Result> UpdateProfile(UpdateAccountRequest request, string token);
+    Task<Result> SendVerificationCode(SendVerificationCodeRequest request);
+    Task<Result> ConfirmVerificationCode(ConfirmVerificationCodeRequest request);
+    Task<Result> ResetPassword(ResetPasswordRequest request);
 }

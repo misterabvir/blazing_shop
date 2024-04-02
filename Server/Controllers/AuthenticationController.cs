@@ -10,6 +10,10 @@ using Application.Users.Queries.RefreshToken;
 using Application.Users.Queries.GetAccount;
 using Server.Common.Endpoints;
 using Application.Users.Commands.UpdateAccount;
+using Domain.Users.ValueObjects;
+using Application.Users.Queries.SendVerificationCode;
+using Application.Users.Queries.ConfirmVerificationCode;
+using Application.Users.Commands.ResetPassword;
 
 namespace Server.Controllers
 {
@@ -80,6 +84,29 @@ namespace Server.Controllers
             var userId = Guid.Parse(HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
             var query = new UpdateAccountCommand(userId, request.Username, request.FirstName, request.LastName, request.Avatar);
             var result = await _sender.Send(query);
+            return result.Match(Ok, BadRequest);
+        }
+
+        [HttpPost(EndPoints.User.Post.SendVerificationCode)]
+        public async Task<IActionResult> SendCodeVerification(SendVerificationCodeRequest request)
+        {
+            var query = new SendVerificationCodeQuery(request.Email);
+            var result = await _sender.Send(query);
+            return result.Match(Ok, BadRequest);
+        }
+
+        [HttpPost(EndPoints.User.Post.ConfirmVerificationCode)]
+        public async Task<IActionResult> ConfirmVerificationCode(ConfirmVerificationCodeRequest request)
+        {
+            var query = new ConfirmVerificationCodeQuery(request.Email, request.Code);
+            var result = await _sender.Send(query);
+            return result.Match(Ok, BadRequest);
+        }
+        [HttpPost(EndPoints.User.Post.ResetPassword)]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            var command = new ResetPasswordCommand(request.Email, request.Password);
+            var result = await _sender.Send(command);
             return result.Match(Ok, BadRequest);
         }
     }

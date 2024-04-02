@@ -4,9 +4,24 @@
 
 <AuthorizeView>
     <Authorized>
-        <span>@_profile.Username</span>
-        <a href="profile"><img src="@_profile.Avatar" width="30" height="30" style="border-radius:15px;" alt="" /> </a>
-               
+        <span>
+            @_profile.Username
+            <AuthorizeView Roles="administrator"><small>(@_profile.Role)</small></AuthorizeView>
+        </span>
+        <div class="btn-group">
+            <button  
+                data-bs-toggle="dropdown" 
+                data-bs-display="static" 
+                aria-expanded="false"
+                style="background-color:transparent; border:0;">
+                <img src="@_profile.Avatar" width="30" height="30" style="border-radius:15px;" alt="" />
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" style="padding-left:0">
+                <li><a class="dropdown-item" href="profile" style="margin-left:0"><i class="bi bi-person-circle"></i>&nbsp;Profile</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" style="margin-left:0" @onclick="LogOutHandler"><i class="bi bi-box-arrow-right"></i>&nbsp;Log Out</a></li>
+            </ul>
+        </div>
     </Authorized>
     <NotAuthorized>
         <a href="authentication/login" class="nav-link">Login</a>
@@ -25,7 +40,7 @@
 
     private void AuthenticatedHandler(string token)
     {
-        Task.Run(()=>GetProfile(token));
+        Task.Run(() => GetProfile(token));
     }
 
     private async Task GetProfile(string token)
@@ -40,6 +55,12 @@
 
     private void UpdatedProfileHandler()
     {
+        StateHasChanged();
+    }
+
+    private void LogOutHandler()
+    {
+        _stateProvider.NotifyUserLogOut();
         StateHasChanged();
     }
 }

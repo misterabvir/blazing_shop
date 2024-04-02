@@ -22,6 +22,7 @@ internal class JwtTokenService(JwtSettings jwtSettings) : IJwtTokenService
             new Claim(type: ClaimTypes.NameIdentifier, value: user.Id.Value.ToString()),
             new Claim(type: ClaimTypes.Email, value: user.Contact.Email.Value),
             new Claim(type: ClaimTypes.MobilePhone, value: user.Contact.Phone.Value),
+            new Claim(type: ClaimTypes.Role, value: user.Role.Value),
             new Claim(type: ClaimTypes.Expiration, value: expiration.ToString()),
         };
 
