@@ -48,13 +48,15 @@
                         </div>
                     }
                     
-                    <AuthorizeView Roles="administrator" Context="buy_context">
+                    <AuthorizeView Context="buy_context">
                         <Authorized>
                             <button class="btn btn-primary"> <i class="bi bi-cart"></i> Add to card</button>
                         </Authorized> 
-                        <NotAuthorized>
-
-                        </NotAuthorized>
+                    </AuthorizeView>
+                    <AuthorizeView Roles="administrator" Context="edit_context">
+                        <Authorized>
+                            <a class="btn btn-danger" href="admin/edit-product/{@Id}"> <i class="bi bi-pencil-square"></i> Edit </a>
+                        </Authorized>
                     </AuthorizeView>
                 </div>
             </div>

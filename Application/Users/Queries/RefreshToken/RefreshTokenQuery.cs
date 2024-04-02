@@ -1,7 +1,7 @@
 ﻿using Application.Base.Repositories;
 using Application.Base.Services;
 using Application.Users.Responses;
-using Domain.Users.Errors;
+using Domain.Errors;
 using Domain.Users.ValueObjects;
 using MediatR;
 using Shared.Results;

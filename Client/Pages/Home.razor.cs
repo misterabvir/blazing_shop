@@ -16,7 +16,7 @@ namespace Client.Pages
         private int _pageNumber => int.TryParse(Page, out int page) ? page : 1;
         private string _categoryUrl = string.Empty;
         private bool _isLoading = false;
-        private Pagination<ProductContract> Pagination { get; set; } = null!;
+        private Pagination<ProductResponse> Pagination { get; set; } = null!;
 
         protected override async Task OnInitializedAsync()
         {

@@ -1,0 +1,248 @@
+﻿@page "/admin/edit-product/{id}"
+@using Client.Services.Sessions
+@inject IToastMessageService _toastMessageService;
+@inject IProductService _productService;
+@inject ICategoryService _categoryService;
+@inject ISessionStorage _sessionStorage;
+
+
+<div class="container item-detail">
+
+    @if (isLoading)
+    {
+        <Loader />
+    }
+    else
+    {
+        @if (_isExist)
+        {
+            <div class="row">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <span class="item-detail-description">Title</span>
+                    <h5 class="item-detail-body-header">
+                        <a href="product/@_product!.Id" class="item-detail-body-link">
+                            @_product.Title
+                        </a>
+                    </h5>
+                </div>
+                <div class=col-auto>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 item-detail-image-wrapper">
+                    <a href="product/@_product!.Id" class="item-detail-body-link">
+                        <img src="@_product.Image" class="item-detail-image" alt="@_product.Title">
+                    </a>
+                </div>
+                <div class="col-12">
+                    <span class="item-detail-description">Description</span>
+                    <p class="item-detail-body-description">@_product.Description</p>
+                    <span class="item-detail-description">Price</span>
+                    @if (_product.OriginalPrice != 0 && _product.OriginalPrice != _product.Price)
+                    {
+                        <div class="item-detail-body-prices">
+                            <p class="item-detail-body-original-price">$ @_product.OriginalPrice</p>
+                            <p class="item-detail-body-price">$ @_product.Price</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <p class="item-detail-body-price">$ @_product.Price</p>
+                        </div>
+                    }
+                </div>
+            </div>
+            <hr />
+
+            @***********************************************************************@
+
+            <div class="row">
+                <div class="col-12 my-1">
+                    <span class="item-detail-description">Id @_product?.Id</span>
+                    <br />
+                    <span class="item-detail-description">Created @_product?.CreatedAt.ToString()</span>
+                    <br />
+                    <span class="item-detail-description">Updated @_product?.UpdatedAt.ToString()</span>
+                </div>
+            </div>
+
+            <div class="row m-0 p-0">
+                <div class="col-sm-12 col-md-4 m-0 p-1">
+                    <div class="m-0 row p-2">
+                        <img src="@Model.Image" style="height:auto; box-shadow: 1px 1px 5px 0px; margin:auto; padding:0;border-radius:3px;" />
+                    </div>
+                    <div class="mx-2 row">
+                        <div class="col-12 mt-1 p-0">
+                            <InputFile class="form-control m-0" OnChange="LoadFiles" />
+                        </div>
+                    </div>
+                    <div class="mx-2 row">
+                        <div class="col-12 mt-1 p-0">
+                            <div class="input-group mb-3">
+                                <button class="btn btn-outline" type="button" id="url-load" @onclick="LoadImageFromUrl">From Url</button>
+                                <input type="text" class="form-control" @bind="url" aria-label="Save from Url" aria-describedby="url-load">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-8 m-0 p-1">
+                    <EditForm Model="@Model" OnSubmit="UpdateProductHandler">
+                        <div class="row">
+                            <DataAnnotationsValidator @ref="DataAnnotationsValidator" />
+                            <div class="form-floating col-12 my-1">
+                                <InputText type="text" class="form-control" id="title" @bind-Value="Model.Title" />
+                                <label for="title" style="margin-left:12px;">Title</label>
+                                <ValidationMessage For="()=>Model.Title" />
+                            </div>
+                            <div class="form-floating col-12 my-1">
+                                <InputTextArea type="text" class="form-control" style="height:100px;" id="description" @bind-Value="Model.Description" />
+                                <label for="description" style="margin-left:12px;">Description</label>
+                                <ValidationMessage For="()=>Model.Description" />
+                            </div>
+                            <div class="form-floating col-12 my-1">
+                                <InputNumber type="number" class="form-control" id="price" @bind-Value="Model.Price" />
+                                <label for="price" style="margin-left:12px;">Price</label>
+                                <ValidationMessage For="()=>Model.Price" />
+                            </div>
+                            <div class="col-12 my-1">
+                                @foreach (var category in Categories)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" checked="@IsContains(category.Id)" id="category_@category.Id" @onchange="(e)=>CategoriesChangedHandler(e.Value is true, category.Id)">
+                                        <label class="form-check-label" for="category_@category.Id">
+                                            <i class="@category.Icon"></i>
+                                            @category.Title
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-12 text-center my-2">
+                            <button class="btn btn-primary px-5" type="submit">Save</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    private bool isLoading = false;
+    private ProductResponse _product = new();
+    private bool _isExist => _product is not null;
+    private string url { get; set; } = string.Empty;
+    private ProductUpdateRequest Model { get; set; } = new();
+    private DataAnnotationsValidator DataAnnotationsValidator { get; set; } = new();
+    private List<CategoryContract> Categories { get; set; } = [];
+
+    private bool IsContains(Guid id) 
+    {
+        var contains = Model.CategoryIds.Contains(id);
+        Console.WriteLine(id + "" +  contains);
+        return contains;
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Guid.TryParse(Id, out Guid value))
+        {
+
+            isLoading = true;
+            var result = await _productService.GetProductById(value);
+            if (result.IsSuccess)
+            {
+                _product = result.Value!;
+                Model.CategoryIds.Clear();
+                Model.CategoryIds.AddRange(_product.Categories.Select(c => c.Id));
+                Console.WriteLine(Model.CategoryIds.Count);
+                ToModel();
+            }
+            else
+            {
+                _toastMessageService.AddErrorMessage(result.Errors.First());
+            }
+            var categoriesResult = await _categoryService.GetCategories();
+            if (categoriesResult.IsSuccess)
+            {
+                Categories = categoriesResult.Value!.ToList();
+
+                ToModel();
+            }
+            else
+            {
+                _toastMessageService.AddErrorMessage(result.Errors.First());
+            }
+
+
+            isLoading = false;
+        }
+
+    }
+
+    private void CategoriesChangedHandler(bool state, Guid id)
+    {
+        if (state && !Model.CategoryIds.Contains(id))
+        {
+            Model.CategoryIds.Add(id);
+        }
+        else
+        {
+            Model.CategoryIds.Remove(id);
+        }
+    }
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var buffer = new byte[e.File.Size];
+        var resized = await e.File.RequestImageFileAsync(e.File.ContentType, 300, int.MaxValue);
+        await resized.OpenReadStream().ReadAsync(buffer);
+        Model.Image = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+    }
+
+    private void LoadImageFromUrl()
+    {
+        if (!string.IsNullOrEmpty(url))
+        {
+            Model.Image = url;
+            url = string.Empty;
+            StateHasChanged();
+        }
+    }
+    private void ToModel()
+    {
+        Model.Id = _product.Id;
+        Model.Price = _product.Price;
+        Model.Title = _product.Title;
+        Model.Description = _product.Description;
+        Model.Image = _product.Image;
+    }
+
+
+    private async Task UpdateProductHandler(EditContext editContext)
+    {
+        if (!editContext.Validate())
+        {
+            _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
+            return;
+        }
+
+        var token = await _sessionStorage.GetItem<string>("token");
+
+        var result = await _productService.UpdateProduct(Model, token);
+
+        if (result.IsSuccess)
+        {
+            _toastMessageService.AddSuccessMessage("Product updated successful");
+            _product = result.Value!;
+            StateHasChanged();
+        }
+    }
+}

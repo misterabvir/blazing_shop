@@ -8,7 +8,7 @@ namespace Client.Pages.ProductLists
     {
 
         [Parameter]
-        public Pagination<ProductContract> Pagination { get; set; } = null!;
+        public Pagination<ProductResponse> Pagination { get; set; } = null!;
         [Parameter]
         public string CategoryUrl { get; set; } = string.Empty;
 

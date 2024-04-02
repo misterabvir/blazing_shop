@@ -1,4 +1,5 @@
 using Domain.Base;
+using Domain.Categories;
 using Domain.Products.Events;
 using Domain.Products.ValueObjects;
 using Domain.Shared.ValueObjects;
@@ -16,6 +17,7 @@ public class Product : Entity<ProductId>
     public Date CreatedAt { get; private set; } = null!;
     public Date UpdatedAt { get; private set; } = null!;
 
+    public virtual List<Category> Categories { get; private set; } = [];
     private Product() { }
 
     private Product(ProductId id, Title title, Description description, Image image, Price price)
@@ -56,50 +58,47 @@ public class Product : Entity<ProductId>
 
     public Result UpdateTitle(Title title)
     {
-        if (Title != title)
-        {
-            Title = title;
-            UpdatedAt = Date.Now;
-            RaiseDomainEvent(new ProductTitleUpdatedDomainEvent(Id.Value, Title.Value));
-            return Result.Success();
-        }
-        return Error.BadRequest("Domain.Product.UpdateName", "Product has same name");
+
+        Title = title;
+        UpdatedAt = Date.Now;
+        RaiseDomainEvent(new ProductTitleUpdatedDomainEvent(Id.Value, Title.Value));
+        return Result.Success();
+
     }
 
 
     public Result UpdateDescription(Description description)
     {
-        if (Description != description)
-        {
-            Description = description;
-            UpdatedAt = Date.Now;
-            RaiseDomainEvent(new ProductDescriptionUpdatedDomainEvent(Id.Value, Description.Value));
-            return Result.Success();
-        }
-        return Error.BadRequest("Domain.Product.UpdateDescription", "Product has same description");
+
+        Description = description;
+        UpdatedAt = Date.Now;
+        RaiseDomainEvent(new ProductDescriptionUpdatedDomainEvent(Id.Value, Description.Value));
+        return Result.Success();
     }
 
     public Result UpdateImage(Image image)
     {
-        if (Image != image)
-        {
-            Image = image;
-            UpdatedAt = Date.Now;
-            RaiseDomainEvent(new ProductImageUpdatedDomainEvent(Id.Value, Image.Value));
-            return Result.Success();
-        }
-        return Error.BadRequest("Domain.Product.UpdateImage", "Product has same image");
+
+        Image = image;
+        UpdatedAt = Date.Now;
+        RaiseDomainEvent(new ProductImageUpdatedDomainEvent(Id.Value, Image.Value));
+        return Result.Success();
+    }
+
+    public Result UpdateCategories(IEnumerable<Category> categories)
+    {
+        Categories = categories.ToList();
+        categories.ToList().ForEach(c => Categories.Add(c));    
+        UpdatedAt = Date.Now;
+        return Result.Success();
     }
 
     public Result UpdatePrice(Price price)
     {
-        if (Price != price && OriginalPrice > price)
-        {
-            Price = price;
-            UpdatedAt = Date.Now;
-            RaiseDomainEvent(new ProductPriceUpdatedDomainEvent(Id.Value, Price.Value, OriginalPrice.Value));
-            return Result.Success();
-        }
-        return Error.BadRequest("Domain.Product.UpdatePrice", "Product has same price or new price is greater than original price");
+
+        Price = price;
+        UpdatedAt = Date.Now;
+        RaiseDomainEvent(new ProductPriceUpdatedDomainEvent(Id.Value, Price.Value, OriginalPrice.Value));
+        return Result.Success();
     }
 }

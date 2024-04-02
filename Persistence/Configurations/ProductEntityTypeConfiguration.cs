@@ -25,6 +25,7 @@ internal class ProductEntityTypeConfiguration : IEntityTypeConfiguration<Product
         product.Property(p => p.CreatedAt).HasConversion(date => date.Value, value => Date.Create(value));
         product.Property(p => p.UpdatedAt).HasConversion(date => date.Value, value => Date.Create(value));
 
+        product.HasMany(p => p.Categories).WithMany(c => c.Products);
 
         product.HasData(
             Product.Create(

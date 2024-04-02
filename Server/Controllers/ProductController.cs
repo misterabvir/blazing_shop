@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
-
 using Server.Common.Extensions;
 using Server.Common.Endpoints;
 using Application.Products.Queries.GetAll;
 using Application.Products.Queries.GetById;
 using Application.Products.Queries.GetByCategory;
+using Contracts.Products;
 
 namespace Server.Controllers;
 
@@ -38,6 +38,14 @@ public class ProductController(ISender sender) : ControllerBase
     {
         var query = new ProductGetByCategoryRequest(categoryId, page, pageSize);
         var response = await _sender.Send(query);
+        return response.Map().Match(Ok, BadRequest);
+    }
+
+    [HttpPut(template: EndPoints.Products.Put.Update)]
+    public async Task<IActionResult> Update(ProductUpdateRequest request)
+    {
+        var command = request.Map();
+        var response = await _sender.Send(command);
         return response.Map().Match(Ok, BadRequest);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Base.Repositories;
 using Domain.Categories;
 using Domain.Categories.ValueObjects;
+using Domain.Products.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
 
@@ -25,5 +26,13 @@ internal class CategoryRepository(BlazingShopContext context) : ICategoryReposit
         return category;
     }
 
+    public async Task<IEnumerable<Category>> GetCategoriesByProduct(ProductId productId) 
+        => await _context
+        .Categories
+        .AsNoTracking()
+        .Where(c => c.Products.Any(p => p.Id == productId))
+        .ToListAsync();
 
+    public async Task<IEnumerable<Category>> GetCategoriesByIds(IEnumerable<CategoryId> ids) 
+        => await _context.Categories.AsNoTracking().IgnoreAutoIncludes().Where(c => ids.Contains(c.Id)).ToListAsync();
 }

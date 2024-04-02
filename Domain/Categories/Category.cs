@@ -1,6 +1,7 @@
 using Domain.Base;
 using Domain.Categories.Events;
 using Domain.Categories.ValueObjects;
+using Domain.Products;
 using Domain.Shared.ValueObjects;
 using Shared.Results;
 
@@ -11,7 +12,7 @@ public class Category : Entity<CategoryId>
     public Title Title { get; private set; } = null!;
     public Icon Icon { get; private set; } = null!;
     public Url Url { get; private set; } = null!;
-
+    public ICollection<Product> Products{ get; private set; } = [];
     private Category() { }
     private Category(CategoryId id, Title title,Icon icon, Url url)
     {

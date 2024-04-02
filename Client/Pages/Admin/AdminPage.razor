@@ -1,5 +1,7 @@
 ﻿@page "/admin"
-
+@inject CustomAuthenticationStateProvider _provider;
+@inject NavigationManager _navigation;
+@inject Account _account;
 
 <h3>Admin Page</h3>
 
@@ -22,5 +24,11 @@
 
 
 @code {
-
+    protected override void OnInitialized()
+    {
+        if(!_provider.IsAuthenticated || _account.Role != "administrator")
+        {
+            _navigation.NavigateTo("/");
+        }
+    }
 }

@@ -1,6 +1,6 @@
 ﻿using Application.Base.Repositories;
+using Domain.Errors;
 using Domain.Users;
-using Domain.Users.Errors;
 using Domain.Users.Owns;
 using Domain.Users.ValueObjects;
 using MediatR;

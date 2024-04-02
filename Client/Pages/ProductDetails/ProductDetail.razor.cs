@@ -7,7 +7,7 @@ namespace Client.Pages.ProductDetails
         [Parameter]
         public string Id { get; set; } = string.Empty;
         private bool isLoading = false;
-        private ProductContract? _product;
+        private ProductResponse? _product;
         private bool _isExist => _product is not null;
         protected override async Task OnInitializedAsync()
         {

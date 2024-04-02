@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Categories;
 using Domain.Products;
 using Domain.Users;
-using Domain.CategoriesProducts;
 
 namespace Persistence.Contexts;
 
@@ -10,7 +9,6 @@ public class BlazingShopContext(DbContextOptions<BlazingShopContext> options) : 
 {
     public DbSet<Category> Categories { get; set; } = null!;
     public DbSet<Product> Products { get; set; } = null!;
-    public DbSet<CategoryProduct> CategoriesProducts { get; set; } = null!;
 
     public DbSet<User> Users { get; set; } = null!;
 

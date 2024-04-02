@@ -1,4 +1,6 @@
-﻿using Contracts.Products;
+﻿using Application.Products.Commands.ProductUpdate;
+using Contracts.Products;
+using Domain.Categories;
 using Domain.Products;
 using Shared.Pagination;
 using Shared.Results;
@@ -7,7 +9,18 @@ namespace Server.Common.Extensions;
 
 public static class ProductExtensions
 {
-    public static ProductContract Map(this Product product)
+
+    public static ProductUpdateCommand Map(this ProductUpdateRequest request)
+    => new(    
+        request.Id,
+        request.Title,
+        request.Description,
+        request.Image,
+        request.Price,
+        request.CategoryIds);
+
+
+    public static ProductResponse Map(this Product product)
        => new()
        {
            Id = product.Id.Value,
@@ -18,9 +31,10 @@ public static class ProductExtensions
            OriginalPrice = product.OriginalPrice.Value,
            CreatedAt = product.CreatedAt.Value,
            UpdatedAt = product.UpdatedAt.Value,
+           Categories = product.Categories.Select(c => c.Map()).ToList()!
        };
     
-    public static Pagination<ProductContract> Map(this Pagination<Product> pagination)
+    public static Pagination<ProductResponse> Map(this Pagination<Product> pagination)
     => new()
     {
         Count = pagination.Count,
@@ -29,11 +43,11 @@ public static class ProductExtensions
         Items = pagination.Items.Select(c => c.Map()).ToList()
     };
 
-    public static List<ProductContract> Map(this IEnumerable<Product> products) => products.Select(p => p.Map()).ToList();
+    public static List<ProductResponse> Map(this IEnumerable<Product> products) => products.Select(p => p.Map()).ToList();
 
-    public static Result<ProductContract> Map(this Result<Product> result) => result.IsSuccess ? result.Value!.Map() : result.Errors;
+    public static Result<ProductResponse> Map(this Result<Product> result) => result.IsSuccess ? result.Value!.Map() : result.Errors;
     
-    public static Result<Pagination<ProductContract>> Map(this Result<Pagination<Product>> result) => result.IsSuccess ? result.Value!.Map() : result.Errors;
+    public static Result<Pagination<ProductResponse>> Map(this Result<Pagination<Product>> result) => result.IsSuccess ? result.Value!.Map() : result.Errors;
 
 }
 
