@@ -11,6 +11,15 @@ namespace Client.Pages.Authentication
 
         private bool IsRegisterSuccess { get; set; } = false;
 
+
+        protected override void OnInitialized()
+        {
+            if(_authenticationStateProvider.IsAuthenticated)
+            {
+                _navigation.NavigateTo("/");
+            }
+        }
+
         private async Task TryRegister(EditContext editContext)
         {
             if (!editContext.Validate())
@@ -49,7 +58,6 @@ namespace Client.Pages.Authentication
                 _authenticationStateProvider.NotifyUserLogIn(result.Value!.Token);
                 _navigation.NavigateTo("/");
             }
-
         }
     }
 }

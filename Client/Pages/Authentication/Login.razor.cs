@@ -2,55 +2,38 @@ using Contracts.Authentications;
 using Microsoft.AspNetCore.Components.Forms;
 using Shared.Results;
 
-namespace Client.Pages.Authentication
+namespace Client.Pages.Authentication;
+
+public partial class Login
 {
-    public partial class Login
+    DataAnnotationsValidator DataAnnotationsValidator { get; set; } = null!;
+    private LoginRequest Model { get; set; } = new();
+
+    protected override void OnInitialized()
     {
-        DataAnnotationsValidator DataAnnotationsValidator { get; set; } = null!;
-        private LoginRequest Model { get; set; } = new();
-        private VerificationRequest VerificationModel { get; set; } = new();
-        private bool IsLogInSuccess { get; set; } = false;
-
-
-        private async Task TryLogin(EditContext editContext)
+        if (_authenticationStateProvider.IsAuthenticated)
         {
-            if (!editContext.Validate())
-            {
-                _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
-                return;
-            }
-            var result = await _authenticationService.Login(Model);
-            IsLogInSuccess = result.IsSuccess;
-            if (!result.IsSuccess)
-            {
-                _toastMessageService.AddErrorMessage(result.Errors);
-            }
-            else
-            {
-                _toastMessageService.AddSuccessMessage("Log In was success, input send code for confirm your credentials");
-                VerificationModel.Email = Model.Email;
-            }
+            _navigation.NavigateTo("/");
         }
+    }
 
-        private async Task TryVerify(EditContext editContext)
+    private async Task TryLogin(EditContext editContext)
+    {
+        if (!editContext.Validate())
         {
-            if (!editContext.Validate())
-            {
-                _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
-                return;
-            }
-
-            var result = await _authenticationService.Verify(VerificationModel);
-            if (!result.IsSuccess)
-            {
-                _toastMessageService.AddErrorMessage(result.Errors);
-            }
-            else
-            {
-                _toastMessageService.AddSuccessMessage("Code confirmed successful");
-                _authenticationStateProvider.NotifyUserLogIn(result.Value!.Token);
-                _navigation.NavigateTo("/");
-            }
+            _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
+            return;
+        }
+        var result = await _authenticationService.Login(Model);
+        if (result.IsFailure)
+        {
+            _toastMessageService.AddErrorMessage(result.Errors);
+        }
+        else
+        {
+            _toastMessageService.AddSuccessMessage("Log In was success");
+            _authenticationStateProvider.NotifyUserLogIn(result.Value!.Token);
+            _navigation.NavigateTo("/");
         }
     }
 }

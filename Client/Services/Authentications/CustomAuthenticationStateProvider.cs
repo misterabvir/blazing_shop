@@ -10,7 +10,9 @@ public class CustomAuthenticationStateProvider(ISessionStorage sessionStorage, J
 {
     private readonly ISessionStorage _sessionStorage = sessionStorage;
     private readonly JwtSettings _jwtSettings = jwtSettings;
-    
+    public bool IsAuthenticated { get; private set; } = false;
+
+
     public Action<string> Authenticated { get; set; } = delegate { };
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -22,7 +24,8 @@ public class CustomAuthenticationStateProvider(ISessionStorage sessionStorage, J
         if (handler.CanReadToken(token))
         {
             var readPrincipal = handler.ValidateToken(token, _jwtSettings.TokenValidationParameters, out var validatedToken);
-            if(readPrincipal.Identity?.IsAuthenticated is true)
+            IsAuthenticated = readPrincipal.Identity?.IsAuthenticated ?? false;
+            if (IsAuthenticated)
             {
                 var claims = (validatedToken as JwtSecurityToken)!.Claims;
                 identity = new ClaimsIdentity(claims, "Blazing Shop");

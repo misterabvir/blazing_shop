@@ -25,7 +25,7 @@ namespace Server.Controllers
         {
             var query = request.Map();
             var result = await _sender.Send(query);
-            return result.Match(Ok, BadRequest);
+            return result.Map().Match(Ok, BadRequest);
         }
 
         [HttpPost(EndPoints.User.Post.Register)]

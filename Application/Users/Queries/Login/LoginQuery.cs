@@ -1,21 +1,20 @@
 ﻿using Application.Base.Repositories;
+using Application.Base.Services;
+using Application.Users.Responses;
 using Domain.Users.Errors;
 using Domain.Users.ValueObjects;
 using MediatR;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Shared.Results;
 
 namespace Application.Users.Queries.Login;
-public record LoginQuery(string Email, string Password) : IRequest<Result>;
+public record LoginQuery(string Email, string Password) : IRequest<Result<TokenResult>>;
 
-public class LoginQueryHandler(IUserRepository userRepository, ILogger<LoginQueryHandler> logger, IMemoryCache cache) : IRequestHandler<LoginQuery, Result>
+public class LoginQueryHandler(IUserRepository userRepository, IJwtTokenService jwtTokenService) : IRequestHandler<LoginQuery, Result<TokenResult>>
 {
     private readonly IUserRepository _userRepository = userRepository;
-    private readonly ILogger<LoginQueryHandler> _logger = logger;
-    private readonly IMemoryCache _cache = cache;
+    private readonly IJwtTokenService _jwtTokenService = jwtTokenService;
 
-    public async Task<Result> Handle(LoginQuery request, CancellationToken cancellationToken)
+    public async Task<Result<TokenResult>> Handle(LoginQuery request, CancellationToken cancellationToken)
     {
         var email = Email.Create(request.Email);
         var user = await _userRepository.GetByEmail(email);
@@ -29,10 +28,8 @@ public class LoginQueryHandler(IUserRepository userRepository, ILogger<LoginQuer
             return Errors.User.InvalidCredentials;
         }
 
-        var code = Guid.NewGuid().ToString()[..6];
-        _cache.Set($"verification:{user.Id}", code, TimeSpan.FromMinutes(5));
-        _logger.LogInformation($"Verification code sent to {request.Email}: {code}");
+        var token = _jwtTokenService.GetJwtToken(user);
 
-        return Result.Success();
+        return new TokenResult(token);
     }
 }

@@ -13,9 +13,9 @@ public class AuthenticationService(IRequestService requestService) : IAuthentica
         return await _requestService.GetAsync<AccountResponse>("/authentication/profile", token);
     }
 
-    public async Task<Result> Login(LoginRequest loginContract)
+    public async Task<Result<TokenResponse>> Login(LoginRequest loginContract)
     {
-        return await _requestService.PostAsync("/authentication/login", loginContract);
+        return await _requestService.PostAsync<TokenResponse>("/authentication/login", loginContract);
     }
 
     public async Task<Result> Register(RegisterRequest RegisterContract)
