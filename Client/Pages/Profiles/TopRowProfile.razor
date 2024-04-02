@@ -6,7 +6,7 @@
     <Authorized>
         <span>
             @_profile.Username
-            <AuthorizeView Roles="administrator"><small>(@_profile.Role)</small></AuthorizeView>
+            <AuthorizeView Roles="administrator" Context="auth_context"><small>(@_profile.Role)</small></AuthorizeView>
         </span>
         <div class="btn-group">
             <button  

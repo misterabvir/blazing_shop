@@ -4,7 +4,6 @@ namespace Domain.Products.Events;
 
 public record ProductCreatedDomainEvent(
     Guid ProductId,
-    Guid CategoryId,
     string Title,
     string Description,
     string Image,

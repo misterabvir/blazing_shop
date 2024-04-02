@@ -22,4 +22,10 @@ public class Security : Entity<SecurityId>
         var passwordHash = salt.Hash(password);
         return new Security(SecurityId.CreateUnique(), passwordHash, salt);
     }
+
+    internal void Update(Security security)
+    {
+        Password = security.Password;
+        Salt = security.Salt;
+    }
 }

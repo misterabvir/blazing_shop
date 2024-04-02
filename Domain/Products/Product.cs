@@ -1,5 +1,4 @@
 using Domain.Base;
-using Domain.Categories.ValueObjects;
 using Domain.Products.Events;
 using Domain.Products.ValueObjects;
 using Domain.Shared.ValueObjects;
@@ -16,14 +15,12 @@ public class Product : Entity<ProductId>
     public Price OriginalPrice { get; private set; } = null!;
     public Date CreatedAt { get; private set; } = null!;
     public Date UpdatedAt { get; private set; } = null!;
-    public CategoryId CategoryId { get; private set; } = null!;
 
     private Product() { }
 
-    private Product(ProductId id, CategoryId categoryId, Title title, Description description, Image image, Price price)
+    private Product(ProductId id, Title title, Description description, Image image, Price price)
     {
         Id = id;
-        CategoryId = categoryId;
         Title = title;
         Description = description;
         Image = image;
@@ -34,14 +31,12 @@ public class Product : Entity<ProductId>
     }
 
     public static Result<Product> Create(
-        CategoryId categoryId,
         Title title,
         Description description,
         Image image,
         Price price)
     {
         var product = new Product(ProductId.CreateUnique(),
-                 categoryId,
                  title,
                  description,
                  image,
@@ -49,7 +44,6 @@ public class Product : Entity<ProductId>
 
         product.RaiseDomainEvent(new ProductCreatedDomainEvent(
                 product.Id.Value,
-                product.CategoryId.Value,
                 product.Title.Value,
                 product.Description.Value,
                 product.Image.Value,

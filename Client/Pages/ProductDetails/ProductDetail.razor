@@ -47,8 +47,14 @@
                             <p class="item-detail-body-price">$ @_product.Price</p>
                         </div>
                     }
-                    <AuthorizeView Roles="administrator">
-                        <button class="btn btn-primary"> <i class="bi bi-cart"></i> Add to card</button>
+                    
+                    <AuthorizeView Roles="administrator" Context="buy_context">
+                        <Authorized>
+                            <button class="btn btn-primary"> <i class="bi bi-cart"></i> Add to card</button>
+                        </Authorized> 
+                        <NotAuthorized>
+
+                        </NotAuthorized>
                     </AuthorizeView>
                 </div>
             </div>

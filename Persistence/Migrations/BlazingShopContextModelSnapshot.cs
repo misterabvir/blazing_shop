@@ -47,6 +47,55 @@ namespace Persistence.Migrations
                         .HasName("pk_categories");
 
                     b.ToTable("categories", "common");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d255e60e-abe5-47d6-a25a-5b45c999fb6a"),
+                            Icon = "bi bi-book",
+                            Title = "Books",
+                            Url = "books"
+                        },
+                        new
+                        {
+                            Id = new Guid("7f121bdd-7103-4ceb-8539-a05972260f04"),
+                            Icon = "bi bi-camera",
+                            Title = "Electronics",
+                            Url = "electronics"
+                        },
+                        new
+                        {
+                            Id = new Guid("1f9a7368-a37c-4271-8c3b-e4b0cb10027f"),
+                            Icon = "bi bi-controller",
+                            Title = "Video Games",
+                            Url = "video-games"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.CategoriesProducts.CategoryProduct", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("category_id");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("product_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_categories_products");
+
+                    b.HasIndex("CategoryId")
+                        .HasDatabaseName("ix_categories_products_category_id");
+
+                    b.HasIndex("ProductId")
+                        .HasDatabaseName("ix_categories_products_product_id");
+
+                    b.ToTable("categories_products", "common");
                 });
 
             modelBuilder.Entity("Domain.Products.Product", b =>
@@ -54,10 +103,6 @@ namespace Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("product_id");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("category_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -93,10 +138,108 @@ namespace Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_products");
 
-                    b.HasIndex("CategoryId")
-                        .HasDatabaseName("ix_products_category_id");
-
                     b.ToTable("products", "common");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("ca2431c3-0ffa-4d04-b5fd-a58271f7d69b"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3781),
+                            Description = "The Hitchhiker's Guide to the Galaxy (sometimes referred to as HG2G, HHGTTG, H2G2, or tHGttG) is a comedy science fiction series created by Douglas Adams.",
+                            Image = "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
+                            OriginalPrice = 9.99m,
+                            Price = 9.99m,
+                            Title = "The Hitchhiker's Guide to the Galaxy",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3784)
+                        },
+                        new
+                        {
+                            Id = new Guid("18ffa6da-99ad-47b3-a154-b395318c16aa"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3803),
+                            Description = "Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator's fortune.",
+                            Image = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
+                            OriginalPrice = 7.99m,
+                            Price = 7.99m,
+                            Title = "Ready Player One",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3804)
+                        },
+                        new
+                        {
+                            Id = new Guid("ec485577-bcf0-4c5e-bc59-2d27f9f2c9d1"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3811),
+                            Description = "Nineteen Eighty-Four: A Novel, often published as 1984, is a dystopian social science fiction novel by English novelist George Orwell. It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime.",
+                            Image = "https://i.pinimg.com/originals/db/0b/0e/db0b0e8e11fb40b303c7c2583a5aea5f.jpg",
+                            OriginalPrice = 6.99m,
+                            Price = 6.99m,
+                            Title = "Nineteen Eighty-Four",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3812)
+                        },
+                        new
+                        {
+                            Id = new Guid("491cc292-5c7e-4b27-9403-0e8717f5e6a6"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3818),
+                            Description = "The Pentax Spotmatic refers to a family of 35mm single-lens reflex cameras manufactured by the Asahi Optical Co. Ltd., later known as Pentax Corporation, between 1964 and 1976.",
+                            Image = "https://upload.wikimedia.org/wikipedia/commons/e/e9/Honeywell-Pentax-Spotmatic.jpg",
+                            OriginalPrice = 166.66m,
+                            Price = 166.66m,
+                            Title = "Pentax Spotmatic",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3818)
+                        },
+                        new
+                        {
+                            Id = new Guid("0e50d58d-ca9e-4dd9-bad0-22b82e481dbc"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3825),
+                            Description = "The Xbox is a home video game console and the first installment in the Xbox series of video game consoles manufactured by Microsoft.",
+                            Image = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
+                            OriginalPrice = 159.99m,
+                            Price = 159.99m,
+                            Title = "Xbox",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3826)
+                        },
+                        new
+                        {
+                            Id = new Guid("72bc65a9-ea2f-4f0a-a584-c80b777f2eb8"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3840),
+                            Description = "The Super Nintendo Entertainment System (SNES), also known as the Super NES or Super Nintendo, is a 16-bit home video game console developed by Nintendo that was released in 1990 in Japan and South Korea.",
+                            Image = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
+                            OriginalPrice = 73.74m,
+                            Price = 73.74m,
+                            Title = "Super Nintendo Entertainment System",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3841)
+                        },
+                        new
+                        {
+                            Id = new Guid("a9bd62dd-8c69-4292-bf57-fcf8405d36a7"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3847),
+                            Description = "Half-Life 2 is a 2004 first-person shooter game developed and published by Valve. Like the original Half-Life, it combines shooting, puzzles, and storytelling, and adds features such as vehicles and physics-based gameplay.",
+                            Image = "https://upload.wikimedia.org/wikipedia/en/2/25/Half-Life_2_cover.jpg",
+                            OriginalPrice = 8.19m,
+                            Price = 8.19m,
+                            Title = "Half-Life 2",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3848)
+                        },
+                        new
+                        {
+                            Id = new Guid("41056a9b-9108-43e2-bb60-607791af18d9"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3854),
+                            Description = "Diablo II is an action role-playing hack-and-slash computer video game developed by Blizzard North and published by Blizzard Entertainment in 2000 for Microsoft Windows, Classic Mac OS, and macOS.",
+                            Image = "https://upload.wikimedia.org/wikipedia/en/d/d5/Diablo_II_Coverart.png",
+                            OriginalPrice = 9.99m,
+                            Price = 9.99m,
+                            Title = "Diablo II",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3854)
+                        },
+                        new
+                        {
+                            Id = new Guid("4dac4758-66ca-4988-bff7-22d3e465d0b6"),
+                            CreatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3860),
+                            Description = "Day of the Tentacle, also known as Maniac Mansion II: Day of the Tentacle, is a 1993 graphic adventure game developed and published by LucasArts. It is the sequel to the 1987 game Maniac Mansion.",
+                            Image = "https://upload.wikimedia.org/wikipedia/en/7/79/Day_of_the_Tentacle_artwork.jpg",
+                            OriginalPrice = 14.99m,
+                            Price = 14.99m,
+                            Title = "Day of the Tentacle",
+                            UpdatedAt = new DateTime(2024, 4, 2, 9, 30, 6, 131, DateTimeKind.Utc).AddTicks(3860)
+                        });
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -116,14 +259,25 @@ namespace Persistence.Migrations
                     b.ToTable("users", "accounts");
                 });
 
-            modelBuilder.Entity("Domain.Products.Product", b =>
+            modelBuilder.Entity("Domain.CategoriesProducts.CategoryProduct", b =>
                 {
-                    b.HasOne("Domain.Categories.Category", null)
+                    b.HasOne("Domain.Categories.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_products_categories_category_id");
+                        .HasConstraintName("fk_categories_products_categories_category_id");
+
+                    b.HasOne("Domain.Products.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_categories_products_products_product_id");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>

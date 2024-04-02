@@ -16,7 +16,6 @@ public static class ProductExtensions
            Image = product.Image.Value,
            Price = product.Price.Value,
            OriginalPrice = product.OriginalPrice.Value,
-           CategoryId = product.CategoryId.Value,
            CreatedAt = product.CreatedAt.Value,
            UpdatedAt = product.UpdatedAt.Value,
        };

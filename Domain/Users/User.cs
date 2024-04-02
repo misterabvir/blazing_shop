@@ -26,4 +26,9 @@ public class User : Entity<UserId>
     {
         Profile.Update(profile);
     }
+
+    public void UpdateSecurity(Security security)
+    {
+        Security.Update(security);  
+    }
 }
