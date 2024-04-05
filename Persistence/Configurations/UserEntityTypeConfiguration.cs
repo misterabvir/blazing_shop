@@ -1,5 +1,5 @@
 ﻿using Domain.Users;
-using Domain.Users.Owns;
+using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

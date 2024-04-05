@@ -1,25 +1,26 @@
 ﻿.picker {
-    position: relative;
     width: 100%;
+    border: 1px solid #ddd;
+    height:100%;
+    border-radius:5px;
 }
 
-    .picker button {
-        position:relative;
-        padding:0 5px 0 0;
-        border:1px solid #ccc;
+    .picker a {
+        padding: 0, 3px;
+        border: 1px solid #ddd;
     }
 
 .picker-button-icon-value {
     position: relative;
     top: 0px;
     left: 4px;
-    font-size: 32px;
+    font-size: 16px;
     color: #555;
 }
 
 .picker-button-icon-name {
     position: relative;
-    top: -6px;
+    top: 0px;
     left: 3px;
     display: inline-block;
     font-size: 16px;
@@ -72,10 +73,15 @@
 
 
 .picker-menu {
-    
 }
 
 .picker-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    flex-direction: row;
+    height: 300px;
+    overflow: auto;
 }
 
 

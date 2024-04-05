@@ -20,4 +20,3 @@ public abstract class Entity<T> : IEquatable<Entity<T>>, IHasDomainEvent
     public void ClearDomainEvents() => _domainEvents.Clear();
 
 }
-

@@ -6,6 +6,7 @@ using Contracts.Categories;
 using Application.Categories.Queries.GetAll;
 using Application.Categories.Queries.GetByUrl;
 using Application.Categories.Commands.Create;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Server.Controllers;
 
@@ -32,9 +33,9 @@ public class CategoryController(ISender sender) : ControllerBase
     }
 
     [HttpPost(EndPoints.Category.Post.Create)]
-    public async Task<IActionResult> Create(CategoryContract category)
+    public async Task<IActionResult> Create(CategoryCreateRequest request)
     {
-        var command = new CategoryCreateCommand(category.Title, category.Icon, category.Url);
+        var command = request.Map();
         var response = await _sender.Send(command);
         return response.Map().Match(Ok, BadRequest);
     }

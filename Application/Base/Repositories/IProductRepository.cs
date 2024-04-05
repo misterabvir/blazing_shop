@@ -10,5 +10,6 @@ public interface IProductRepository
     Task<Pagination<Product>> GetAll(int take, int skip);
     Task<Pagination<Product>> GetByCategory(CategoryId categoryId, int take, int skip);
     Task<Product?> GetById(ProductId productId);
+    Task Add(Product product);
     Task Update(Product product);
 }

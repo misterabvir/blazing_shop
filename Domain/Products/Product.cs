@@ -1,5 +1,6 @@
 using Domain.Base;
-using Domain.Categories;
+using Domain.Categories.ValueObjects;
+using Domain.Products.Entities;
 using Domain.Products.Events;
 using Domain.Products.ValueObjects;
 using Domain.Shared.ValueObjects;
@@ -7,98 +8,73 @@ using Shared.Results;
 
 namespace Domain.Products;
 
-public class Product : Entity<ProductId>
+public class Product : AggregateRoot<ProductId>
 {
     public Title Title { get; private set; } = null!;
     public Description Description { get; private set; } = null!;
     public Image Image { get; private set; } = null!;
-    public Price Price { get; private set; } = null!;
-    public Price OriginalPrice { get; private set; } = null!;
     public Date CreatedAt { get; private set; } = null!;
     public Date UpdatedAt { get; private set; } = null!;
+    public CategoryId CategoryId { get; private set; } = null!;
+    private readonly List<Variant> _variants = [];
+    public IReadOnlyList<Variant> Variants => _variants.AsReadOnly();
 
-    public virtual List<Category> Categories { get; private set; } = [];
     private Product() { }
 
-    private Product(ProductId id, Title title, Description description, Image image, Price price)
+    private Product(ProductId id, CategoryId categoryId, Title title, Description description, Image image)
     {
         Id = id;
         Title = title;
         Description = description;
         Image = image;
-        OriginalPrice = price;
-        Price = price;
         CreatedAt = Date.Now;
         UpdatedAt = Date.Now;
+        CategoryId = categoryId;
     }
 
-    public static Result<Product> Create(
+    public static Product Create(
+        CategoryId categoryId,
         Title title,
         Description description,
-        Image image,
-        Price price)
+        Image image)
     {
         var product = new Product(ProductId.CreateUnique(),
+                categoryId,
                  title,
                  description,
-                 image,
-                 price);
-
-        product.RaiseDomainEvent(new ProductCreatedDomainEvent(
-                product.Id.Value,
-                product.Title.Value,
-                product.Description.Value,
-                product.Image.Value,
-                product.Price.Value,
-                product.CreatedAt.Value
-            ));
+                 image);
 
         return product;
     }
 
-    public Result UpdateTitle(Title title)
+    public Result Update(Title? title = null, Description? description = null, Image? image = null)
     {
+        if (title is not null)
+        {
+            Title = title;
+        }
 
-        Title = title;
-        UpdatedAt = Date.Now;
-        RaiseDomainEvent(new ProductTitleUpdatedDomainEvent(Id.Value, Title.Value));
-        return Result.Success();
+        if (description is not null)
+        {
+            Description = description;
+        }
 
-    }
+        if (image is not null)
+        {
+            Image = image;
+        }
 
-
-    public Result UpdateDescription(Description description)
-    {
-
-        Description = description;
-        UpdatedAt = Date.Now;
-        RaiseDomainEvent(new ProductDescriptionUpdatedDomainEvent(Id.Value, Description.Value));
-        return Result.Success();
-    }
-
-    public Result UpdateImage(Image image)
-    {
-
-        Image = image;
-        UpdatedAt = Date.Now;
-        RaiseDomainEvent(new ProductImageUpdatedDomainEvent(Id.Value, Image.Value));
-        return Result.Success();
-    }
-
-    public Result UpdateCategories(IEnumerable<Category> categories)
-    {
-        Categories = categories.ToList();
-        categories.ToList().ForEach(c => Categories.Add(c));    
         UpdatedAt = Date.Now;
         return Result.Success();
     }
 
-    public Result UpdatePrice(Price price)
+    public Result UpdateVariants(IEnumerable<Variant> variants)
     {
-
-        Price = price;
+        _variants.Clear();  
+        _variants.AddRange(variants);
         UpdatedAt = Date.Now;
-        RaiseDomainEvent(new ProductPriceUpdatedDomainEvent(Id.Value, Price.Value, OriginalPrice.Value));
+        RaiseDomainEvent(new ProductVariantsChangedDomainEvent(Id, CategoryId, variants.Select(v => v.PublishVariantId).ToList()));
         return Result.Success();
     }
+
 }

@@ -48,4 +48,12 @@ public class ProductController(ISender sender) : ControllerBase
         var response = await _sender.Send(command);
         return response.Map().Match(Ok, BadRequest);
     }
+
+    [HttpPost(template: EndPoints.Products.Post.Create)]
+    public async Task<IActionResult> Create(ProductCreateRequest request)
+    {
+        var command = request.Map();
+        var response = await _sender.Send(command);
+        return response.Match(Ok, BadRequest);
+    }
 }

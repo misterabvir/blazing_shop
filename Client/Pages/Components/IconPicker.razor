@@ -1,18 +1,16 @@
 ﻿@inject IIconService _iconService;
 
 <div class="dropdown picker">
-    <button class="dropdown-toggle btn btn-light" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="@_selectedIcon.Value picker-button-icon-value"></i>
-        <span class="picker-button-icon-name">&nbsp;@_selectedIcon.Name</span>
-    </button>
+    <a class="dropdown-toggle btn btn-light align-content-center h-100" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Choose Icon
+    </a>
+    <i class="@_selectedIcon.Value picker-button-icon-value"></i>
     <div class="dropdown-menu picker-menu" aria-labelledby="dropdownMenuButton1">
-        <ul class="picker-list" style="display:flex; flex-wrap:wrap; list-style-type: none; flex-direction:row; height:300px; overflow:auto;">
+        <ul class="picker-list" style="">
             @foreach (var icon in icons)
             {
                 <li class="picker-item">
-                    <span class="@icon.Value picker-icon-value" @onclick="() => SelectedIconChanged(icon)">
-
-                    </span>
+                    <span class="@icon.Value picker-icon-value" @onclick="() => SelectedIconChanged(icon)"></span>
                     <span class="picker-icon-name"><i class="@icon.Value"></i>&nbsp;@icon.Name</span>
                 </li>
             }

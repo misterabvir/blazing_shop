@@ -19,6 +19,23 @@ internal class CategoryRepository(BlazingShopContext context) : ICategoryReposit
     public Task<Category?> GetByUrl(Url url) =>
         _context.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Url == url);
 
+
+
+    public async Task<IEnumerable<Category>> GetCategoriesByProduct(ProductId productId)
+        => await _context
+        .Categories
+        .AsNoTracking()
+        .Where(c => c.PublishVariants.Any(pv => pv.Items.Any(i => i.ProductId == productId)))
+        .ToListAsync();
+
+    public async Task<IEnumerable<Category>> GetCategoriesByIds(IEnumerable<CategoryId> ids)
+        => await _context.Categories.AsNoTracking().IgnoreAutoIncludes().Where(c => ids.Contains(c.Id)).ToListAsync();
+
+    public Task<Category?> GetById(CategoryId categoryId)
+    {
+        return _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+    }
+
     public async Task<Category> Add(Category category)
     {
         await _context.Categories.AddAsync(category);
@@ -26,13 +43,10 @@ internal class CategoryRepository(BlazingShopContext context) : ICategoryReposit
         return category;
     }
 
-    public async Task<IEnumerable<Category>> GetCategoriesByProduct(ProductId productId) 
-        => await _context
-        .Categories
-        .AsNoTracking()
-        .Where(c => c.Products.Any(p => p.Id == productId))
-        .ToListAsync();
+    public async Task Update(Category category)
+    {              
+        _context.Categories.Update(category);    
 
-    public async Task<IEnumerable<Category>> GetCategoriesByIds(IEnumerable<CategoryId> ids) 
-        => await _context.Categories.AsNoTracking().IgnoreAutoIncludes().Where(c => ids.Contains(c.Id)).ToListAsync();
+        await _context.SaveChangesAsync();
+    }
 }

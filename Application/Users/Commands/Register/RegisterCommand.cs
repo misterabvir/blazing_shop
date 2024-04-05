@@ -1,7 +1,7 @@
 ﻿using Application.Base.Repositories;
 using Domain.Errors;
 using Domain.Users;
-using Domain.Users.Owns;
+using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;

@@ -22,25 +22,6 @@ namespace Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CategoryProduct", b =>
-                {
-                    b.Property<Guid>("CategoriesId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("categories_id");
-
-                    b.Property<Guid>("ProductsId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("products_id");
-
-                    b.HasKey("CategoriesId", "ProductsId")
-                        .HasName("pk_category_product");
-
-                    b.HasIndex("ProductsId")
-                        .HasDatabaseName("ix_category_product_products_id");
-
-                    b.ToTable("category_product", "common");
-                });
-
             modelBuilder.Entity("Domain.Categories.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -65,30 +46,7 @@ namespace Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_categories");
 
-                    b.ToTable("categories", "common");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("4c53944e-e934-4a69-847a-cf0f9d455fde"),
-                            Icon = "bi bi-book",
-                            Title = "Books",
-                            Url = "books"
-                        },
-                        new
-                        {
-                            Id = new Guid("28e38b78-2b4b-4ba4-8349-3cc5bdba508d"),
-                            Icon = "bi bi-camera",
-                            Title = "Electronics",
-                            Url = "electronics"
-                        },
-                        new
-                        {
-                            Id = new Guid("49e3abd9-e6f1-4540-8f83-9af5e365dbb5"),
-                            Icon = "bi bi-controller",
-                            Title = "Video Games",
-                            Url = "video-games"
-                        });
+                    b.ToTable("categories", "category_schema");
                 });
 
             modelBuilder.Entity("Domain.Products.Product", b =>
@@ -96,6 +54,10 @@ namespace Persistence.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("product_id");
+
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("category_id");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
@@ -111,14 +73,6 @@ namespace Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("image");
 
-                    b.Property<decimal>("OriginalPrice")
-                        .HasColumnType("numeric")
-                        .HasColumnName("original_price");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric")
-                        .HasColumnName("price");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text")
@@ -131,108 +85,7 @@ namespace Persistence.Migrations
                     b.HasKey("Id")
                         .HasName("pk_products");
 
-                    b.ToTable("products", "common");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("8439742b-e2a0-4dcb-a41c-721631c517a6"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3824),
-                            Description = "The Hitchhiker's Guide to the Galaxy (sometimes referred to as HG2G, HHGTTG, H2G2, or tHGttG) is a comedy science fiction series created by Douglas Adams.",
-                            Image = "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
-                            OriginalPrice = 9.99m,
-                            Price = 9.99m,
-                            Title = "The Hitchhiker's Guide to the Galaxy",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3828)
-                        },
-                        new
-                        {
-                            Id = new Guid("05da9d98-7961-4cf0-92a6-b606f6868452"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3848),
-                            Description = "Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator's fortune.",
-                            Image = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
-                            OriginalPrice = 7.99m,
-                            Price = 7.99m,
-                            Title = "Ready Player One",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3849)
-                        },
-                        new
-                        {
-                            Id = new Guid("b1821b70-8165-434c-b136-83c833bf333b"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3856),
-                            Description = "Nineteen Eighty-Four: A Novel, often published as 1984, is a dystopian social science fiction novel by English novelist George Orwell. It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime.",
-                            Image = "https://i.pinimg.com/originals/db/0b/0e/db0b0e8e11fb40b303c7c2583a5aea5f.jpg",
-                            OriginalPrice = 6.99m,
-                            Price = 6.99m,
-                            Title = "Nineteen Eighty-Four",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3857)
-                        },
-                        new
-                        {
-                            Id = new Guid("6fa265df-aa6c-478f-a1b2-ff46c1519b40"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3864),
-                            Description = "The Pentax Spotmatic refers to a family of 35mm single-lens reflex cameras manufactured by the Asahi Optical Co. Ltd., later known as Pentax Corporation, between 1964 and 1976.",
-                            Image = "https://upload.wikimedia.org/wikipedia/commons/e/e9/Honeywell-Pentax-Spotmatic.jpg",
-                            OriginalPrice = 166.66m,
-                            Price = 166.66m,
-                            Title = "Pentax Spotmatic",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3864)
-                        },
-                        new
-                        {
-                            Id = new Guid("f574563a-cac4-4bd9-b418-cf6511c3a356"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3887),
-                            Description = "The Xbox is a home video game console and the first installment in the Xbox series of video game consoles manufactured by Microsoft.",
-                            Image = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
-                            OriginalPrice = 159.99m,
-                            Price = 159.99m,
-                            Title = "Xbox",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3887)
-                        },
-                        new
-                        {
-                            Id = new Guid("feb29bfa-e0aa-4d6a-a767-7908436b3761"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3894),
-                            Description = "The Super Nintendo Entertainment System (SNES), also known as the Super NES or Super Nintendo, is a 16-bit home video game console developed by Nintendo that was released in 1990 in Japan and South Korea.",
-                            Image = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
-                            OriginalPrice = 73.74m,
-                            Price = 73.74m,
-                            Title = "Super Nintendo Entertainment System",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3895)
-                        },
-                        new
-                        {
-                            Id = new Guid("f0358393-841d-4033-b91b-5b75d75eafc0"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3913),
-                            Description = "Half-Life 2 is a 2004 first-person shooter game developed and published by Valve. Like the original Half-Life, it combines shooting, puzzles, and storytelling, and adds features such as vehicles and physics-based gameplay.",
-                            Image = "https://upload.wikimedia.org/wikipedia/en/2/25/Half-Life_2_cover.jpg",
-                            OriginalPrice = 8.19m,
-                            Price = 8.19m,
-                            Title = "Half-Life 2",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3914)
-                        },
-                        new
-                        {
-                            Id = new Guid("b5d4cfee-9b27-4eb8-be8c-357a4448978e"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3920),
-                            Description = "Diablo II is an action role-playing hack-and-slash computer video game developed by Blizzard North and published by Blizzard Entertainment in 2000 for Microsoft Windows, Classic Mac OS, and macOS.",
-                            Image = "https://upload.wikimedia.org/wikipedia/en/d/d5/Diablo_II_Coverart.png",
-                            OriginalPrice = 9.99m,
-                            Price = 9.99m,
-                            Title = "Diablo II",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3921)
-                        },
-                        new
-                        {
-                            Id = new Guid("1ba14ccb-e7a7-487c-9e25-e4c562a63fa0"),
-                            CreatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3927),
-                            Description = "Day of the Tentacle, also known as Maniac Mansion II: Day of the Tentacle, is a 1993 graphic adventure game developed and published by LucasArts. It is the sequel to the 1987 game Maniac Mansion.",
-                            Image = "https://upload.wikimedia.org/wikipedia/en/7/79/Day_of_the_Tentacle_artwork.jpg",
-                            OriginalPrice = 14.99m,
-                            Price = 14.99m,
-                            Title = "Day of the Tentacle",
-                            UpdatedAt = new DateTime(2024, 4, 2, 19, 5, 23, 788, DateTimeKind.Utc).AddTicks(3928)
-                        });
+                    b.ToTable("products", "product_schema");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
@@ -252,26 +105,119 @@ namespace Persistence.Migrations
                     b.ToTable("users", "accounts");
                 });
 
-            modelBuilder.Entity("CategoryProduct", b =>
+            modelBuilder.Entity("Domain.Categories.Category", b =>
                 {
-                    b.HasOne("Domain.Categories.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_category_product_categories_categories_id");
+                    b.OwnsMany("Domain.Categories.Entities.PublishVariant", "PublishVariants", b1 =>
+                        {
+                            b1.Property<Guid>("CategoryId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("category_id");
 
-                    b.HasOne("Domain.Products.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_category_product_products_products_id");
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("publish_variant_id");
+
+                            b1.Property<string>("Icon")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("icon");
+
+                            b1.Property<string>("Title")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("title");
+
+                            b1.Property<string>("Url")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("url");
+
+                            b1.HasKey("CategoryId", "Id")
+                                .HasName("pk_publish_variants");
+
+                            b1.ToTable("publish_variants", "category_schema");
+
+                            b1.WithOwner()
+                                .HasForeignKey("CategoryId")
+                                .HasConstraintName("fk_publish_variants_categories_category_id");
+
+                            b1.OwnsMany("Domain.Categories.Entities.PublishVariantItem", "Items", b2 =>
+                                {
+                                    b2.Property<Guid>("Id")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("publish_variant_item_id");
+
+                                    b2.Property<Guid>("CategoryId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("category_id");
+
+                                    b2.Property<Guid>("PublishVariantId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("publish_variant_id");
+
+                                    b2.Property<Guid>("ProductId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("product_id");
+
+                                    b2.HasKey("Id", "CategoryId", "PublishVariantId")
+                                        .HasName("pk_publish_variant_items");
+
+                                    b2.HasIndex("CategoryId", "PublishVariantId")
+                                        .HasDatabaseName("ix_publish_variant_items_category_id_publish_variant_id");
+
+                                    b2.ToTable("publish_variant_items", "category_schema");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("CategoryId", "PublishVariantId")
+                                        .HasConstraintName("fk_publish_variant_items_publish_variants_category_id_publish_");
+                                });
+
+                            b1.Navigation("Items");
+                        });
+
+                    b.Navigation("PublishVariants");
+                });
+
+            modelBuilder.Entity("Domain.Products.Product", b =>
+                {
+                    b.OwnsMany("Domain.Products.Entities.Variant", "Variants", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("product_id");
+
+                            b1.Property<Guid>("Id")
+                                .HasColumnType("uuid")
+                                .HasColumnName("variant_id");
+
+                            b1.Property<double>("Discount")
+                                .HasColumnType("double precision")
+                                .HasColumnName("discount");
+
+                            b1.Property<decimal>("Price")
+                                .HasColumnType("numeric")
+                                .HasColumnName("price");
+
+                            b1.Property<Guid>("PublishVariantId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("publish_variant_id");
+
+                            b1.HasKey("ProductId", "Id")
+                                .HasName("pk_variants");
+
+                            b1.ToTable("variants", "product_schema");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ProductId")
+                                .HasConstraintName("fk_variants_products_product_id");
+                        });
+
+                    b.Navigation("Variants");
                 });
 
             modelBuilder.Entity("Domain.Users.User", b =>
                 {
-                    b.OwnsOne("Domain.Users.Owns.Contact", "Contact", b1 =>
+                    b.OwnsOne("Domain.Users.Entities.Contact", "Contact", b1 =>
                         {
                             b1.Property<Guid>("Id")
                                 .HasColumnType("uuid")
@@ -305,7 +251,7 @@ namespace Persistence.Migrations
                                 .HasConstraintName("fk_contacts_users_user_id");
                         });
 
-                    b.OwnsOne("Domain.Users.Owns.Profile", "Profile", b1 =>
+                    b.OwnsOne("Domain.Users.Entities.Profile", "Profile", b1 =>
                         {
                             b1.Property<Guid>("Id")
                                 .HasColumnType("uuid")
@@ -348,7 +294,7 @@ namespace Persistence.Migrations
                                 .HasConstraintName("fk_profiles_users_user_id");
                         });
 
-                    b.OwnsOne("Domain.Users.Owns.Security", "Security", b1 =>
+                    b.OwnsOne("Domain.Users.Entities.Security", "Security", b1 =>
                         {
                             b1.Property<Guid>("Id")
                                 .HasColumnType("uuid")

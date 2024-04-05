@@ -33,20 +33,7 @@
                 <div class="col">
                     <span class="item-detail-description">Description</span>
                     <p class="item-detail-body-description">@_product.Description</p>
-                    <span class="item-detail-description">Price</span>
-                    @if (_product.OriginalPrice != 0 && _product.OriginalPrice != _product.Price)
-                    {
-                        <div class="item-detail-body-prices">
-                            <p class="item-detail-body-original-price">$ @_product.OriginalPrice</p>
-                            <p class="item-detail-body-price">$ @_product.Price</p>
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            <p class="item-detail-body-price">$ @_product.Price</p>
-                        </div>
-                    }
+
                     
                     <AuthorizeView Context="buy_context">
                         <Authorized>

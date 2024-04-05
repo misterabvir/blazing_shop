@@ -1,18 +1,21 @@
 using Client.Services.Requests;
+using Client.Services.Sessions;
 using Contracts.Categories;
 using Shared.Results;
 
 namespace Client.Services.Categories;
 
-public class CategoryService(IRequestService requestService) : ICategoryService
+public class CategoryService(IRequestService requestService, ISessionStorage sessionStorage) : ICategoryService
 {
     private readonly IRequestService _requestService = requestService;
+    private readonly ISessionStorage _sessionStorage = sessionStorage;
     public Action<Result<CategoryContract>> OnCategoriesChangedEvent { get; set; } = delegate { };
 
 
-    public async Task Create(CategoryContract category)
+    public async Task Create(CategoryCreateRequest request)
     {
-        var result = await _requestService.PostAsync<CategoryContract>("/categories/create", category);
+        var token = await _sessionStorage.GetItem<string>("token");
+        var result = await _requestService.PostAsync<CategoryContract>("/categories/create", request, token);
         OnCategoriesChangedEvent?.Invoke(result);
     }
 

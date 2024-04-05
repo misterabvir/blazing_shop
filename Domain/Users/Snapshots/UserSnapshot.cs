@@ -1,4 +1,4 @@
-﻿using Domain.Users.Owns;
+﻿using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;

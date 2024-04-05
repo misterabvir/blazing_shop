@@ -1,5 +1,5 @@
 ﻿@inject ICategoryService _categoryService;
-
+@inject IToastMessageService _toastMessageService;
 
 <div class="row">
     <div class="col">
@@ -8,34 +8,44 @@
 </div>
 <div class="row mt-2">
     <div class="col">
-        <div class="label">Choose Icon</div>
-        <IconPicker OnIconChanged="IconChanged" />
-    </div>
-</div>
-<div class="row mt-3">
-    <div class="col">
-        <div class="label">Type Name</div>
-        <div><input class="form-control" type="text" @bind="@Title" /></div>
-
-    </div>
-</div>
-
-<div class="row mt-2">
-    <div class="col">
         <div class="label">Result:</div>
         <div class="result">
-            <i class="@Icon"></i>
-            <span>@Title</span>
+            <i class="@Model.Icon"></i>
+            <span>@Model.Title</span>
+
+            @foreach (var variant in Model.PublishVariants)
+            {
+                <p style="padding:0; margin:0">
+                    <i class="@variant.Icon" style="font-size:small; padding-left:10px;"></i>
+                    <span style="font-size:small;padding-left:10px;">@variant.Title</span>
+                    <button class="btn btn-close" @onclick="()=>Remove(variant)"></button>
+                </p>
+            }
+
         </div>
     </div>
 </div>
-<div class="row mt-2">
-    <div class="col">
-        <button class="btn btn-primary" disabled="@IsDisabled" @onclick="CreateCategory">Create</button>
+<hr />
+@if (CanAddVariants)
+{
+    <CreateCategoryVariant OnCreated="AddVariant" />
+    <hr />
+}
+<EditForm Model="@Model" OnSubmit="Create">
+    <div class="row">
+        <DataAnnotationsValidator @ref="DataAnnotationsValidator" />
+        <div class="col-sm-12 col-md-6 my-1">
+            <IconPicker OnIconChanged="IconChanged" />
+        </div>
+        <div class="form-floating col-sm-12 col-md-4 my-1">
+            <InputText type="text" class="form-control" id="title" @bind-Value="Model.Title" />
+            <label for="title" style="margin-left:12px;">Title</label>
+            <ValidationMessage For="()=>Model.Title" />
+        </div>
+
+        <div class="col-auto text-center my-1">
+            <button class="btn btn-primary h-100" type="submit">Create</button>
+        </div>
     </div>
-</div>
 
-
-
-
-
+</EditForm>

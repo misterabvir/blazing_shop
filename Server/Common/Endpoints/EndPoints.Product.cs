@@ -17,5 +17,10 @@ public static partial class EndPoints
         {
             public const string Update = "update/{productId}";
         }
+
+        public static class Post
+        {
+            public const string Create = "create";
+        }
     }
 }

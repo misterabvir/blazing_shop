@@ -1,10 +1,10 @@
 ﻿using Domain.Base;
-using Domain.Users.Owns;
+using Domain.Users.Entities;
 using Domain.Users.ValueObjects;
 
 namespace Domain.Users;
 
-public class User : Entity<UserId>
+public class User : AggregateRoot<UserId>
 {
     private User() { }
     private User(UserId userId, Profile profile, Contact contact, Security @private, Role role)

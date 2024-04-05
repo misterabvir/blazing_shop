@@ -1,0 +1,56 @@
+﻿<div class="">
+    <div class="row">
+        <img src="@Image" style="height:300px; width:auto; margin:auto; box-shadow: 0 0 5px 0; padding:0;border-radius:3px;" />
+    </div>
+    <div class="row">
+        <div class="col-12 my-2 p-0">
+            <InputFile class="form-control m-0" OnChange="LoadFiles" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 mt-2 p-0">
+            <div class="input-group mb-3">
+                <button class="btn btn-outline" type="button" id="url-load" @onclick="LoadImageFromUrl">From Url</button>
+                <input type="text" class="form-control" @bind="url" aria-label="Save from Url" aria-describedby="url-load">
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string Image
+    {
+        get => _image;
+        set
+        {
+            if (_image != value)
+            {
+                _image = value;
+                ImageChanged.InvokeAsync(value);
+            }
+        }
+    }
+    private string _image = "/images/empty.jpg";
+    private string url { get; set; } = string.Empty;
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        var buffer = new byte[e.File.Size];
+        var resized = await e.File.RequestImageFileAsync(e.File.ContentType, 300, int.MaxValue);
+        await resized.OpenReadStream().ReadAsync(buffer);
+        Image = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(buffer)}";
+        StateHasChanged();
+    }
+
+    private void LoadImageFromUrl()
+    {
+        if (!string.IsNullOrEmpty(url))
+        {
+            Image = url;
+            url = string.Empty;
+            StateHasChanged();
+        }
+    }
+
+    [Parameter]
+    public EventCallback<string> ImageChanged { get; set; }
+}

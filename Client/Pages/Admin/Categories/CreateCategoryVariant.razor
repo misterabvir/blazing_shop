@@ -1,0 +1,47 @@
+﻿@inject IToastMessageService _toastMessageService;
+
+<div class="row">
+    <h4>Add variant</h4>
+</div>
+
+<EditForm Model="@Model" OnSubmit="Create">
+    <div class="row">
+        <DataAnnotationsValidator @ref="DataAnnotationsValidator" />
+        <div class="col-sm-12 col-md-6 my-1">
+            <IconPicker OnIconChanged="IconChanged" />
+        </div>       
+        <div class="form-floating col-sm-12 col-md-4 my-1">
+            <InputText type="text" class="form-control" id="title" @bind-Value="Model.Title" />
+            <label for="title" style="margin-left:12px;">Title</label>
+            <ValidationMessage For="()=>Model.Title" />
+        </div>
+        <div class="col-auto text-center my-1">
+            <button class="btn btn-primary px-5 h-100" type="submit">Add</button>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    private PublishVariantCreateRequest Model { get; set; } = new();
+    private DataAnnotationsValidator DataAnnotationsValidator { get; set; } = new();
+    void IconChanged(Icon icon)
+    {
+        Model.Icon = icon.Value;
+    }
+
+    [Parameter]
+    public EventCallback<PublishVariantCreateRequest> OnCreated { get; set; }
+
+    private async Task Create(EditContext editContext)
+    {
+        if (!editContext.Validate())
+        {
+            _toastMessageService.AddErrorMessage(Error.Validation("Some fields are not valid"));
+            return;
+        }
+
+        await OnCreated.InvokeAsync(Model);
+        Model = new();
+    }
+}

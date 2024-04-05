@@ -1,5 +1,117 @@
-﻿<h3>Create Product</h3>
+﻿@page "/create-product"
+
+@inject ICategoryService _categoryService;
+@inject IProductService _productService;
+@inject IToastMessageService _toastMessageService;
+
+<div class="h-75 w-100 justify-content-center  d-inline-block pt-3">
+    <div class="container justify-content-center border border-1" style="max-width: 600px; min-width:300px;">
+        <div class="row mt-3">
+            <div class="col-12 ">
+                <h3 style="text-align:center;">Create Product</h3>
+            </div>
+        </div>
+        
+        <div class="row mt-3">
+
+            <EditForm Model="@Model" OnSubmit="CreateProduct">
+                <DataAnnotationsValidator @ref="DataAnnotationsValidator" />
+                <div class="col-12 my-2 px-2">
+                    <ImageInput @bind-Image="@Model.Image"/>
+                </div>
+                <div class="form-floating col-12 my-2">
+                    <InputText type="text" class="form-control" id="title" @bind-Value="Model.Title" />
+                    <label for="title">Title</label>
+                    <ValidationMessage For="()=>Model.Title" />
+                </div>
+                <div class="form-floating col-12 my-2">
+                    <InputText type="text" class="form-control" id="description" @bind-Value="Model.Description" />
+                    <label for="description">Description</label>
+                    <ValidationMessage For="()=>Model.Description" />
+                </div>
+                <div class="form-floating col-12 my-2">
+
+                    <InputSelect @bind-Value="Model.CategoryId" class="form-control" id="category_id" @onselect="CategoryChanged">
+                        @foreach (var category in _categories)
+                        {
+                            <option value="@category.Id">@category.Title</option>
+                        }
+                    </InputSelect>
+                    <label for="category_id">Category</label>
+                    <ValidationMessage For="()=>Model.CategoryId" />
+                    @foreach (var variant in _categories.FirstOrDefault(c => c.Id == Model.CategoryId)?.PublishVariants ?? [])
+                    {
+                        <div class="form-check">
+
+                            <input class="form-check-input" checked="@IsContains(variant.Id)" type="checkbox" value="@variant.Id" id="flexCheckDefault-@variant.Id" @onchange="(e)=>ChangeVariants(e.Value is true, variant.Id)" />
+                            <label class="form-check-label" for="flexCheckDefault-@variant.Id">
+                                @variant.Title
+                            </label>
+                            @if (IsContains(variant.Id))
+                            {
+                                <div class="form-floating ">
+                                    <input type="number" step="0.01" value="0" min="0" class="form-control" id="price-@variant.Id" @onchange="(e)=>ChangeVariantPrice(e, variant.Id)" />
+                                    <label for="price-@variant.Id">Price for '@variant.Title' variant</label>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="col-12 text-center my-2">
+                    <button class="btn btn-primary px-5" type="submit">Create</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
 
 @code {
+    private ProductCreateRequest Model { get; set; } = new();
+    private DataAnnotationsValidator DataAnnotationsValidator { get; set; } = new();
+    private List<CategoryContract> _categories = [];
 
+    private bool IsContains(Guid id) => Model.Variants.FirstOrDefault(v => v.PublishVariantId == id) != null;
+
+    private void ChangeVariantPrice(ChangeEventArgs e, Guid id)
+    {
+        var variant = Model.Variants.FirstOrDefault(v => v.PublishVariantId == id);
+
+        if (variant is not null && decimal.TryParse(e.Value?.ToString(), out decimal price))
+        {
+            variant.Price = price;
+        }
+    }
+
+    private async Task CreateProduct()
+    {
+        var result = await _productService.CreateProduct(Model);
+        if (result.IsSuccess)
+        {
+            _toastMessageService.AddSuccessMessage("Product created");
+            Model = new();
+        }
+    }
+
+
+    private void CategoryChanged()
+    {
+        Model.Variants.Clear();
+    }
+
+    private void ChangeVariants(bool flag, Guid id)
+    {
+
+        if (flag)
+            Model.Variants.Add(new ProductVariantCreateRequest() { PublishVariantId = id, Price = 0 });
+        else
+        {
+            Model.Variants.RemoveAll(v => v.PublishVariantId == id);
+        }
+        Console.WriteLine(Model.Variants.Count);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = (await _categoryService.GetCategories()).Value!.ToList();
+    }
 }

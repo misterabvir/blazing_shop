@@ -1,11 +1,11 @@
-﻿@page "/admin/edit-product/{id}"
+﻿ @page "/admin/edit-product/{id}"
 @using Client.Services.Sessions
 @inject IToastMessageService _toastMessageService;
 @inject IProductService _productService;
 @inject ICategoryService _categoryService;
 @inject ISessionStorage _sessionStorage;
 
-
+@*
 <div class="container item-detail">
 
     @if (isLoading)
@@ -39,26 +39,12 @@
                 <div class="col-12">
                     <span class="item-detail-description">Description</span>
                     <p class="item-detail-body-description">@_product.Description</p>
-                    <span class="item-detail-description">Price</span>
-                    @if (_product.OriginalPrice != 0 && _product.OriginalPrice != _product.Price)
-                    {
-                        <div class="item-detail-body-prices">
-                            <p class="item-detail-body-original-price">$ @_product.OriginalPrice</p>
-                            <p class="item-detail-body-price">$ @_product.Price</p>
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            <p class="item-detail-body-price">$ @_product.Price</p>
-                        </div>
-                    }
                 </div>
             </div>
             <hr />
 
             @***********************************************************************@
-
+@*
             <div class="row">
                 <div class="col-12 my-1">
                     <span class="item-detail-description">Id @_product?.Id</span>
@@ -130,8 +116,9 @@
         }
     }
 </div>
-
+*@
 @code {
+    /*
     [Parameter]
     public string Id { get; set; } = string.Empty;
     private bool isLoading = false;
@@ -161,7 +148,6 @@
             {
                 _product = result.Value!;
                 Model.CategoryIds.Clear();
-                Model.CategoryIds.AddRange(_product.Categories.Select(c => c.Id));
                 Console.WriteLine(Model.CategoryIds.Count);
                 ToModel();
             }
@@ -219,7 +205,6 @@
     private void ToModel()
     {
         Model.Id = _product.Id;
-        Model.Price = _product.Price;
         Model.Title = _product.Title;
         Model.Description = _product.Description;
         Model.Image = _product.Image;
@@ -245,4 +230,5 @@
             StateHasChanged();
         }
     }
+*/
 }

@@ -10,6 +10,9 @@ namespace Persistence.Repositories;
 internal class ProductRepository(BlazingShopContext context) : IProductRepository
 {
     private readonly BlazingShopContext _context = context;
+
+
+
     public async Task<Pagination<Product>> GetAll(int page, int pageSize)
     {
         var count = await _context.Products.CountAsync();
@@ -29,8 +32,10 @@ internal class ProductRepository(BlazingShopContext context) : IProductRepositor
 
     public async Task<Pagination<Product>> GetByCategory(CategoryId categoryId, int page, int pageSize)
     {
-        var query = _context.Categories.Include(c => c.Products).AsNoTracking().Where(c => c.Id == categoryId).SelectMany(c => c.Products);
+       
+        var query = _context.Products.AsNoTracking().Where(c => c.CategoryId == categoryId);
         var count = await query.CountAsync();
+
         var skip = (page - 1) * pageSize;
         var take = pageSize;
         var items = await query.Skip(skip).Take(take).ToListAsync();
@@ -46,22 +51,18 @@ internal class ProductRepository(BlazingShopContext context) : IProductRepositor
     }
 
     public async Task<Product?> GetById(ProductId productId) =>
-        await _context.Products.AsNoTracking().Include(c => c.Categories).FirstOrDefaultAsync(p => p.Id == productId);
+        await _context.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == productId);
+
+    public async Task Add(Product product)
+    {
+        await _context.Products.AddAsync(product);
+        await _context.SaveChangesAsync();
+    }
 
     public async Task Update(Product product)
     {
 
-        var trackedProduct = await _context.Products.Include(c => c.Categories).FirstAsync(p => p.Id == product.Id);
-        trackedProduct!.Categories.Clear();
-        foreach (var category in product.Categories)
-        {
-            trackedProduct!.Categories.Add(_context.Categories.First(c => c.Id == category.Id));
-
-        }
-        trackedProduct.UpdateTitle(product.Title);
-        trackedProduct.UpdateDescription(product.Description);
-        trackedProduct.UpdatePrice(product.Price);
-        trackedProduct.UpdateImage(product.Image);
+        _context.Products.Update(product);
         await _context.SaveChangesAsync();
     }
 }
