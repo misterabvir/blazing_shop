@@ -20,7 +20,7 @@ public class CategoryService(IRequestService requestService, ISessionStorage ses
     }
 
     public Task<Result<IEnumerable<CategoryContract>>> GetCategories() 
-        => _requestService.GetIEnumerableAsync<CategoryContract>("/categories");
+        => _requestService.GetIEnumerableAsync<IEnumerable<CategoryContract>>("/categories");
 
     public Task<Result<CategoryContract>> GetCategoryByUrl(string url) 
         => _requestService.GetAsync<CategoryContract>($"/categories/by-url/{url}");

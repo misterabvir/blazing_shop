@@ -2,7 +2,7 @@
 
 
 
-<div class="container d-flex flex-column justify-content-center">    
+<div class="container d-flex flex-column justify-content-center">
     <div class="row m-0 p-0">
         <div class="col m-0 p-0">
             <nav aria-label="Page navigation example">
@@ -10,8 +10,8 @@
 
                     @{
                         var length = (double)Pagination.Count / Pagination.PageSize;
-                        var urlCategory = string.IsNullOrEmpty(CategoryUrl) ? string.Empty : $"product/category/{CategoryUrl}/";
-                        var url = $"{urlCategory}page/{Pagination.Page - 1}";
+                        var urlCategory = string.IsNullOrEmpty(CategoryUrl) ? string.Empty : CategoryUrl;
+                        var url = $"{urlCategory}/page/{Pagination.Page - 1}";
                         var disabledPrevious = Pagination.Page > 1 ? string.Empty : "disabled";
                     }
                     <li class="page-item @disabledPrevious"><a class="page-link" href="@url"><span aria-hidden="true">&laquo;</span></a></li>
@@ -43,12 +43,23 @@
 
     @foreach (var product in Pagination.Items)
     {
+
+        var cheapestVariant = product.Variants.OrderBy(v => v.DiscountedPrice).First();
+        var minPrice = cheapestVariant.DiscountedPrice;
+        var originalPrice = cheapestVariant.Price;
+        var discount = cheapestVariant.Discount;
+
         <div class="row item-card">
             <div class="col-auto item-card-image-wrapper">
-                <a href="product/@product.Id" class="item-card-body-link">
-                    <img src="@product.Image" class="item-card-image" alt="@product.Title">
-                </a>
-
+                <div class="m-0 p-0 item-card-image-link">
+                    <a href="product/@product.Id" class="item-card-body-link">
+                        <img src="@product.Image" class="item-card-image" alt="@product.Title">
+                        @if (discount != 0)
+                        {
+                            <span class="item-card-body-discount">@discount%</span>
+                        }
+                    </a>
+                </div>
             </div>
 
             <div class="col item-card-body">
@@ -59,8 +70,11 @@
                     </h5>
                 </a>
                 <p class="item-card-body-description">@product.Description</p>
-
-
+                <span class="item-card-body-price">$ @minPrice</span>
+                @if (discount != 0)
+                {
+                    <span class="item-card-body-original-price">$ @originalPrice</span>
+                }
             </div>
         </div>
     }

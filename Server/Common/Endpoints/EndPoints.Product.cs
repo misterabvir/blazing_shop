@@ -11,6 +11,7 @@ public static partial class EndPoints
             public const string All = "page/{page}/page-size/{pageSize}";
             public const string ById = "{productId}";
             public const string ByCategory = "category/{categoryId}/page/{page}/page-size/{pageSize}";
+            public const string ByVariant = "variant/{variantId}/page/{page}/page-size/{pageSize}";
         }
 
         public static class Put 

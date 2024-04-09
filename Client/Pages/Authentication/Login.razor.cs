@@ -25,11 +25,7 @@ public partial class Login
             return;
         }
         var result = await _authenticationService.Login(Model);
-        if (result.IsFailure)
-        {
-            _toastMessageService.AddErrorMessage(result.Errors);
-        }
-        else
+        if (result.IsSuccess)
         {
             _toastMessageService.AddSuccessMessage("Log In was success");
             _authenticationStateProvider.NotifyUserLogIn(result.Value!.Token);

@@ -19,10 +19,6 @@ namespace Client.Pages.ProductDetails
                 {
                     _product = result.Value!;
                 }
-                else
-                {
-                    _toastMessageService.AddErrorMessage(result.Errors.First());
-                }
                 isLoading = false;
             }
         }

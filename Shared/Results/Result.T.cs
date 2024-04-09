@@ -11,4 +11,5 @@ public sealed class Result<T> : Result
     public static implicit operator Result<T>(Error error) => new(error);
     public static implicit operator Result<T>(List<Error> errors) => new(errors);
     public static implicit operator Result<T>(T value) => new(value);
+
 }

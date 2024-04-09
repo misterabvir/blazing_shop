@@ -10,6 +10,8 @@ namespace Client.Pages
         [Parameter]
         public string? Url { get; set; }
         [Parameter]
+        public string? Variant { get; set; }
+        [Parameter]
         public string? Page { get; set; }
 
         private int _pageSize { get; set; } = 5; //TODO  will be refactored
@@ -39,16 +41,27 @@ namespace Client.Pages
             _isLoading = true;
             if (Url is not null)
             {
+
                 var result = await _categoryService.GetCategoryByUrl(Url.ToLower());
 
                 if (result.IsSuccess)
                 {
-                    await LoadByCategory(result.Value!);
+                    if (Variant is not null)
+                    {
+                        var variant = result.Value!.PublishVariants.FirstOrDefault(x => x.Url == Variant);
+                        if (variant is not null)
+                        {
+                            await LoadByVariant(result.Value!, variant);
+                        }
+                        else
+                        {
+                            await LoadByCategory(result.Value!);
+                        }
+                    }
                 }
                 else
                 {
                     _categoryUrl = string.Empty;
-                    _toastMessageService.AddErrorMessage(result.Errors.First());
                     await LoadAll();
                 }
             }
@@ -65,11 +78,18 @@ namespace Client.Pages
             if (result.IsSuccess)
             {
                 Pagination = result.Value!;
-                _categoryUrl = category.Url;
+                _categoryUrl = $"product/category/{category.Url}";
             }
-            else
+        }
+
+
+        private async Task LoadByVariant(CategoryContract category, PublishVariantContract variant)
+        {
+            var result = await _productService.GetProductsByVariant(variant.Id, _pageNumber, _pageSize);
+            if (result.IsSuccess)
             {
-                _toastMessageService.AddErrorMessage(result.Errors.First());
+                Pagination = result.Value!;
+                _categoryUrl = $"product/category/{category.Url}/variant/{variant.Url}";
             }
         }
 
@@ -80,10 +100,6 @@ namespace Client.Pages
             if (result.IsSuccess)
             {
                 Pagination = result.Value!;
-            }
-            else
-            {
-                _toastMessageService.AddErrorMessage(result.Errors.First());
             }
         }
     }

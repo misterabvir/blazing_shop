@@ -7,22 +7,24 @@ namespace Domain.Products.Entities;
 public class Variant : Entity<VariantId>
 {
     private Variant() { }
-    
-    
-    private Variant(VariantId variantId, ProductId productId, PublishVariantId publishVariantId, Price price)
+
+
+    private Variant(VariantId variantId, ProductId productId, PublishVariantId publishVariantId, Price price, Discount? discount = null)
     {
         Id = variantId;
-        PublishVariantId = publishVariantId;    
+        PublishVariantId = publishVariantId;
         Price = price;
-        Discount = Discount.None;
-        ProductId = productId;  
+        Discount = discount ?? Discount.None;
+        ProductId = productId;
     }
-    
+
     public ProductId ProductId { get; private set; } = null!;
     public PublishVariantId PublishVariantId { get; private set; } = null!;
     public Price Price { get; private set; } = null!;
     public Discount Discount { get; private set; } = null!;
 
     public static Variant Create(PublishVariantId publishVariantId, ProductId productId, Price price)
-        => new (VariantId.CreateUnique(), productId, publishVariantId, price);
+        => new(VariantId.CreateUnique(), productId, publishVariantId, price);
+    public static Variant Create(PublishVariantId publishVariantId, ProductId productId, Price price, Discount discount)
+    => new(VariantId.CreateUnique(), productId, publishVariantId, price, discount);
 }

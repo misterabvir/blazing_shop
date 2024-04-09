@@ -1,4 +1,5 @@
 ﻿using Application.Base.Repositories;
+using Domain.Categories;
 using Domain.Categories.ValueObjects;
 using Domain.Products;
 using Domain.Products.ValueObjects;
@@ -11,47 +12,27 @@ internal class ProductRepository(BlazingShopContext context) : IProductRepositor
 {
     private readonly BlazingShopContext _context = context;
 
-
-
     public async Task<Pagination<Product>> GetAll(int page, int pageSize)
     {
-        var count = await _context.Products.CountAsync();
-        var skip = (page - 1) * pageSize;
-        var take = pageSize;
-        var items = await _context.Products.AsNoTracking().Skip(skip).Take(take).ToListAsync();
-        var pagination = new Pagination<Product>()
-        {
-            Count = count,
-            Items = items,
-            Page = page,
-            PageSize = pageSize
-        };
-
-        return pagination;
+        var query = _context.Products.AsNoTracking();
+        return await GetPagination(page, pageSize, query);
     }
 
     public async Task<Pagination<Product>> GetByCategory(CategoryId categoryId, int page, int pageSize)
     {
        
         var query = _context.Products.AsNoTracking().Where(c => c.CategoryId == categoryId);
-        var count = await query.CountAsync();
+        return await GetPagination(page, pageSize, query);
+    }
 
-        var skip = (page - 1) * pageSize;
-        var take = pageSize;
-        var items = await query.Skip(skip).Take(take).ToListAsync();
-        var pagination = new Pagination<Product>()
-        {
-            Count = count,
-            Items = items,
-            Page = page,
-            PageSize = pageSize
-        };
-
-        return pagination;
+    public async Task<Pagination<Product>> GetByVariant(PublishVariantId variantId, int page, int pageSize)
+    {
+        var query = _context.Products.AsNoTracking().Where(c => c.Variants.Any(v => v.PublishVariantId == variantId));
+        return await GetPagination(page, pageSize, query);
     }
 
     public async Task<Product?> GetById(ProductId productId) =>
-        await _context.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == productId);
+        await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
 
     public async Task Add(Product product)
     {
@@ -64,5 +45,23 @@ internal class ProductRepository(BlazingShopContext context) : IProductRepositor
 
         _context.Products.Update(product);
         await _context.SaveChangesAsync();
+    }
+
+
+    private static async Task<Pagination<Product>> GetPagination(int page, int pageSize, IQueryable<Product> query)
+    {
+        var count = await query.CountAsync();
+        var skip = (page - 1) * pageSize;
+        var take = pageSize;
+        var items = await query.AsNoTracking().Skip(skip).Take(take).ToListAsync();
+        var pagination = new Pagination<Product>()
+        {
+            Count = count,
+            Items = items,
+            Page = page,
+            PageSize = pageSize
+        };
+
+        return pagination;
     }
 }

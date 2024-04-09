@@ -21,10 +21,28 @@
     transition: transform 0.2s;
 }
 
-    .item-card-image:hover {
-        transform: scale(1.1);
-        box-shadow: #333 1px 1px 10px 0px;
+.item-card-image-link{
+    position:relative;
+}
+    .item-card-image-link span {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        font-size: 36px;
+        font-weight: bold;
+        -webkit-text-stroke: 2px black;
+        border-radius: 0 0 60px 0;
+        background-color: orangered;
+        padding: 0 15px 15px 5px;
+        box-shadow: 2px 2px 3px 3px orangered;
+        color: yellow;
     }
+
+
+.item-card-image-link:hover {
+    transform: scale(1.1);
+    box-shadow: #333 1px 1px 10px 0px;
+}
 
 
 
@@ -40,10 +58,14 @@
 
 .item-card-body-price {
     font-style: oblique;
-    color: red;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: bolder;
+    padding-right:10px;
     margin: 0;
+}
+
+.item-card-body-price:hover {
+    color: red;
 }
 
 .item-card-body-original-price {

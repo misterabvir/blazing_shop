@@ -15,6 +15,10 @@ public class ProductService(IRequestService requestService, ISessionStorage sess
     public Task<Result<Pagination<ProductResponse>>> GetProducts(int page = 1, int pageSize = 3) 
         => _requestService.GetAsync<Pagination<ProductResponse>>($"/products/page/{page}/page-size/{pageSize}");
 
+    public Task<Result<Pagination<ProductResponse>>> GetProductsByVariant(Guid variantId, int page, int pageSize)
+        => _requestService.GetAsync<Pagination<ProductResponse>>($"/products/variant/{variantId}/page/{page}/page-size/{pageSize}");
+    
+
     public Task<Result<Pagination<ProductResponse>>> GetProductsByCategory(Guid categoryId, int page = 1, int pageSize = 3) 
         =>  _requestService.GetAsync<Pagination<ProductResponse>>($"/products/category/{categoryId}/page/{page}/page-size/{pageSize}");
 
@@ -31,7 +35,7 @@ public class ProductService(IRequestService requestService, ISessionStorage sess
     {
         var token = await _sessionStorage.GetItem<string>("token");
         return await _requestService.PostAsync("/products/create", request, token);
-    } 
-        
-    
+    }
+
+   
 }

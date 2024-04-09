@@ -29,11 +29,7 @@ namespace Client.Pages.Authentication
             }
             var result = await _authenticationService.Register(Model);
             IsRegisterSuccess = result.IsSuccess;
-            if (!result.IsSuccess)
-            {
-                _toastMessageService.AddErrorMessage(result.Errors);
-            }
-            else
+            if (result.IsSuccess)
             {
                 _toastMessageService.AddSuccessMessage("Sign In was success, input send code for confirm your credentials");
                 VerificationModel.Email = Model.Email;
@@ -48,11 +44,7 @@ namespace Client.Pages.Authentication
                 return;
             }
             var result = await _authenticationService.Verify(VerificationModel);
-            if (!result.IsSuccess)
-            {
-                _toastMessageService.AddErrorMessage(result.Errors);
-            }
-            else
+            if (result.IsSuccess)
             {
                 _toastMessageService.AddSuccessMessage("Code confirmed successful");
                 _authenticationStateProvider.NotifyUserLogIn(result.Value!.Token);

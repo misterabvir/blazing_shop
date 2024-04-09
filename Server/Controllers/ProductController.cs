@@ -6,6 +6,7 @@ using Application.Products.Queries.GetAll;
 using Application.Products.Queries.GetById;
 using Application.Products.Queries.GetByCategory;
 using Contracts.Products;
+using Application.Products.Queries.GetByVariant;
 
 namespace Server.Controllers;
 
@@ -40,6 +41,14 @@ public class ProductController(ISender sender) : ControllerBase
         var response = await _sender.Send(query);
         return response.Map().Match(Ok, BadRequest);
     }
+    [HttpGet(template: EndPoints.Products.Get.ByVariant)]
+    public async Task<IActionResult> GetByVariant(Guid variantId, int page, int pageSize)
+    {
+        var query = new ProductGetByVariantRequest(variantId, page, pageSize);
+        var response = await _sender.Send(query);
+        return response.Map().Match(Ok, BadRequest);
+    }
+
 
     [HttpPut(template: EndPoints.Products.Put.Update)]
     public async Task<IActionResult> Update(ProductUpdateRequest request)

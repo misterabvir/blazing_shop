@@ -40,18 +40,11 @@ namespace Client.Layout
                 StateHasChanged();
                 _toastService.AddSuccessMessage("Category added");
             }
-            else
-            {
-                _toastService.AddErrorMessage(result.Errors.First());
-            }
         }
 
         private void ToggleNavMenu()
         {
             _collapseNavMenu = !_collapseNavMenu;
         }
-
-
-
     }
 }
